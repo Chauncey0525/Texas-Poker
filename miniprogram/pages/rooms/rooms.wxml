@@ -18,6 +18,87 @@
     </view>
   </view>
 
+  <!-- 搜索和筛选栏 -->
+  <view class="search-filter-bar">
+    <!-- 搜索框 -->
+    <view class="search-box">
+      <input 
+        class="search-input"
+        type="text"
+        placeholder="搜索房间名称、房间号、房主"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="search-icon">🔍</view>
+      <view 
+        class="clear-btn" 
+        wx:if="{{searchKeyword}}"
+        bindtap="onClearSearch"
+      >
+        ✕
+      </view>
+    </view>
+    
+    <!-- 筛选按钮 -->
+    <view class="filter-btn" bindtap="onToggleFilter">
+      <text>筛选</text>
+      <text class="filter-icon">▼</text>
+    </view>
+  </view>
+
+  <!-- 筛选面板 -->
+  <view class="filter-panel" wx:if="{{showFilter}}">
+    <view class="filter-title">按人数筛选</view>
+    <view class="filter-options">
+      <view 
+        class="filter-option {{filterPlayerCount === null ? 'active' : ''}}"
+        data-count="{{null}}"
+        bindtap="onFilterPlayerCount"
+      >
+        全部
+      </view>
+      <view 
+        class="filter-option {{filterPlayerCount === 2 ? 'active' : ''}}"
+        data-count="2"
+        bindtap="onFilterPlayerCount"
+      >
+        2人
+      </view>
+      <view 
+        class="filter-option {{filterPlayerCount === 3 ? 'active' : ''}}"
+        data-count="3"
+        bindtap="onFilterPlayerCount"
+      >
+        3人
+      </view>
+      <view 
+        class="filter-option {{filterPlayerCount === 4 ? 'active' : ''}}"
+        data-count="4"
+        bindtap="onFilterPlayerCount"
+      >
+        4人
+      </view>
+      <view 
+        class="filter-option {{filterPlayerCount === 5 ? 'active' : ''}}"
+        data-count="5"
+        bindtap="onFilterPlayerCount"
+      >
+        5人
+      </view>
+      <view 
+        class="filter-option {{filterPlayerCount === 6 ? 'active' : ''}}"
+        data-count="6"
+        bindtap="onFilterPlayerCount"
+      >
+        6人
+      </view>
+    </view>
+    <view class="filter-actions">
+      <button class="btn-clear" bindtap="onClearFilters">清除筛选</button>
+    </view>
+  </view>
+
   <!-- 创建房间按钮 -->
   <view class="create-room-btn" bindtap="onCreateRoom">
     <text class="icon">➕</text>
@@ -31,7 +112,12 @@
     </block>
     
     <block wx:elif="{{rooms.length === 0}}">
-      <view class="empty">暂无房间</view>
+      <view class="empty">
+        <text wx:if="{{searchKeyword || filterPlayerCount !== null}}">
+          没有找到符合条件的房间
+        </text>
+        <text wx:else>暂无房间</text>
+      </view>
     </block>
 
     <block wx:else>
