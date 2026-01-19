@@ -122,6 +122,31 @@ MONGODB_URI=mongodb://localhost:27017/texas-poker-gto
 - 位置范围可视化
 - 范围对比功能
 
+## Git 工作流程
+
+本项目使用双分支策略：
+
+- **main 分支**：生产环境代码，稳定版本
+- **dev 分支**：日常开发分支，用于功能开发和bug修复
+
+### 开发流程
+
+1. **日常开发在 dev 分支进行**
+   ```bash
+   git checkout dev
+   git pull origin dev
+   # 进行开发...
+   git add .
+   git commit -m "feat: 功能描述"
+   git push origin dev
+   ```
+
+2. **合并到 main 分支**
+   - 通过 GitHub Pull Request：`dev` → `main`
+   - 或本地合并（需要审查）
+
+详细说明请查看 [.git-workflow.md](.git-workflow.md)
+
 ## 注意事项
 
 1. 微信小程序包体大小限制（2MB），需要优化资源
