@@ -89,7 +89,7 @@
       wx:if="{{showBetInput}}"
       currentBet="{{gameState.currentBet}}"
       playerChips="{{gameState.players[myPlayerIndex].chips}}"
-      minBet="{{gameState.currentBet || gameState.settings?.bigBlind || 20}}"
+      minBet="{{minBetAmount}}"
       bind:confirm="onBet"
     />
     
@@ -98,7 +98,7 @@
       wx:if="{{showRaiseInput}}"
       currentBet="{{gameState.currentBet}}"
       playerChips="{{gameState.players[myPlayerIndex].chips}}"
-      minBet="{{gameState.currentBet * 2}}"
+      minBet="{{minRaiseAmount}}"
       bind:confirm="onRaise"
     />
 

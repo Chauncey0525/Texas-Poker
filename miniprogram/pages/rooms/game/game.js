@@ -18,7 +18,9 @@ Page({
     actionTimer: null,
     timeLeft: 0,
     showBetInput: false,
-    showRaiseInput: false
+    showRaiseInput: false,
+    minBetAmount: 20,
+    minRaiseAmount: 40
   },
 
   onLoad(options) {
@@ -143,6 +145,12 @@ Page({
                      gameState.currentPhase !== 'waiting' &&
                      gameState.currentPhase !== 'ended';
 
+    // 计算最小下注金额
+    const currentBet = gameState.currentBet || 0;
+    const bigBlind = room.settings ? room.settings.bigBlind : 20;
+    const minBetAmount = currentBet > 0 ? currentBet : bigBlind;
+    const minRaiseAmount = currentBet > 0 ? currentBet * 2 : bigBlind * 2;
+
     this.setData({
       gameState: {
         ...gameState,
@@ -157,12 +165,14 @@ Page({
           cards: this.getPlayerCards(gameState, idx, myPlayerIndex)
         })),
         pot: gameState.pot || 0,
-        currentBet: gameState.currentBet || 0,
+        currentBet: currentBet,
         gamePhase: gameState.currentPhase,
         communityCards: gameState.communityCards || []
       },
       myPlayerIndex,
-      isMyTurn
+      isMyTurn,
+      minBetAmount,
+      minRaiseAmount
     });
 
     // 如果是我的回合，启动倒计时
