@@ -1,0 +1,94 @@
+<!--pages/replay/detail/detail.wxml-->
+<view class="container" wx:if="{{gameRecord}}">
+  <!-- 游戏信息 -->
+  <view class="card">
+    <view class="title">游戏信息</view>
+    <view class="game-info">
+      <text>时间: {{gameRecord.timestamp}}</text>
+      <text>玩家数: {{gameRecord.gameState.players.length}}</text>
+      <text>最终底池: {{gameRecord.gameState.pot}}</text>
+      <text wx:if="{{gameRecord.finalResult}}">结果: {{gameRecord.finalResult.message}}</text>
+    </view>
+  </view>
+
+  <!-- 回放控制 -->
+  <view class="card">
+    <view class="title">牌局回放</view>
+    <view class="replay-controls">
+      <button class="btn btn-primary" bindtap="startReplay" wx:if="{{!isReplaying}}">开始回放</button>
+      <button class="btn btn-danger" bindtap="stopReplay" wx:else>停止回放</button>
+      <text class="replay-progress">步骤: {{currentStep}} / {{gameRecord.gameState.actions.length}}</text>
+    </view>
+    
+    <!-- 动作列表 -->
+    <view class="actions-list">
+      <view 
+        class="action-item {{currentStep > index ? 'past' : ''}} {{currentStep === index + 1 ? 'current' : ''}}"
+        wx:for="{{gameRecord.gameState.actions}}" 
+        wx:key="index"
+        data-step="{{index + 1}}"
+        bindtap="jumpToStep"
+      >
+        <view class="action-header">
+          <text class="action-player">玩家{{item.playerIndex + 1}}</text>
+          <text class="action-phase">{{item.phase}}</text>
+        </view>
+        <view class="action-content">
+          <text class="action-type">{{item.action}}</text>
+          <text wx:if="{{item.amount}}">金额: {{item.amount}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- GTO分析 -->
+  <view class="card" wx:if="{{gtoAnalysis}}">
+    <view class="title">GTO分析</view>
+    <view class="analysis-summary">
+      <view class="summary-item">
+        <text class="summary-label">总决策数:</text>
+        <text class="summary-value">{{gtoAnalysis.totalDecisions}}</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-label">正确决策:</text>
+        <text class="summary-value">{{gtoAnalysis.correctDecisions}}</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-label">准确率:</text>
+        <text class="summary-value">{{gtoAnalysis.accuracy}}%</text>
+      </view>
+    </view>
+    
+    <button class="btn btn-secondary" bindtap="showAnalysis">查看详细分析</button>
+  </view>
+
+  <!-- 详细分析弹窗 -->
+  <view wx:if="{{showAnalysis && gtoAnalysis}}" class="analysis-modal" bindtap="hideAnalysis">
+    <view class="analysis-content" catchtap="stopPropagation">
+      <view class="analysis-header">
+        <text class="title">详细分析</text>
+        <text class="close-btn" bindtap="hideAnalysis">×</text>
+      </view>
+      
+      <view class="mistakes-list" wx:if="{{gtoAnalysis.mistakes.length > 0}}">
+        <view class="mistake-item" wx:for="{{gtoAnalysis.mistakes}}" wx:key="step">
+          <view class="mistake-header">
+            <text>步骤 {{item.step + 1}} - {{item.action.phase}}</text>
+          </view>
+      <view class="mistake-content">
+        <text>你的决策: {{item.action.action}}</text>
+        <text>GTO建议: {{item.gtoAdvice.recommendedAction}}</text>
+        <text>期望价值: {{item.gtoAdvice.ev}}</text>
+        <view wx:if="{{item.gtoAdvice.frequencies}}" class="frequencies">
+          <text>动作频率: 弃牌{{item.gtoAdvice.frequencies.fold}}% / 跟注{{item.gtoAdvice.frequencies.call}}% / 加注{{item.gtoAdvice.frequencies.raise}}%</text>
+        </view>
+      </view>
+        </view>
+      </view>
+      
+      <view wx:else class="no-mistakes">
+        <text>太棒了！所有决策都符合GTO建议！</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,51 @@
+<!--pages/knowledge/knowledge.wxml-->
+<view class="container">
+  <view class="search-section card">
+    <input 
+      class="search-input" 
+      placeholder="搜索文章..." 
+      value="{{searchKeyword}}"
+      bindinput="onSearch"
+    />
+  </view>
+
+  <view class="categories-section card">
+    <view class="title">分类</view>
+    <view class="categories-grid">
+      <view 
+        class="category-item {{selectedCategory === item.id ? 'active' : ''}}"
+        wx:for="{{categories}}" 
+        wx:key="id"
+        data-category="{{item.id}}"
+        bindtap="selectCategory"
+      >
+        <text class="category-icon">{{item.icon}}</text>
+        <text class="category-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="articles-section">
+    <view class="title">文章列表 ({{filteredArticles.length}})</view>
+    <view wx:if="{{filteredArticles.length === 0}}" class="empty-state">
+      <text>暂无文章</text>
+    </view>
+    <view wx:else class="articles-list">
+      <view 
+        class="article-item card"
+        wx:for="{{filteredArticles}}"
+        wx:key="id"
+        wx:for-item="article"
+        data-id="{{article.id}}"
+        bindtap="viewArticle"
+      >
+        <view class="article-title">{{article.title}}</view>
+        <view class="article-summary">{{article.summary}}</view>
+        <view class="article-meta">
+          <text class="article-category">{{article.categoryName}}</text>
+          <text class="article-date">{{article.date}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

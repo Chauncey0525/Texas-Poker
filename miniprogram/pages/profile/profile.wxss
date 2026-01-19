@@ -1,0 +1,78 @@
+/* pages/profile/profile.wxss */
+.profile-header {
+  text-align: center;
+  padding: 60rpx 30rpx;
+}
+
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
+  border: 4rpx solid #533483;
+  margin-bottom: 20rpx;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.stats-section {
+  margin-top: 30rpx;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #0f3460;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.menu-section {
+  margin-top: 30rpx;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.menu-icon {
+  font-size: 48rpx;
+  margin-right: 30rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 32rpx;
+  color: #ffffff;
+}
+
+.menu-arrow {
+  font-size: 40rpx;
+  color: #7A7E83;
+}

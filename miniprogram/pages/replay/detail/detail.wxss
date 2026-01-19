@@ -1,0 +1,184 @@
+/* pages/replay/detail/detail.wxss */
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+  margin-top: 20rpx;
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 20rpx 0;
+  flex-wrap: wrap;
+}
+
+.replay-progress {
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.actions-list {
+  margin-top: 30rpx;
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+.action-item {
+  padding: 20rpx;
+  margin-bottom: 15rpx;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  border: 2rpx solid #533483;
+  transition: all 0.3s;
+}
+
+.action-item.past {
+  opacity: 0.6;
+  border-color: #7A7E83;
+}
+
+.action-item.current {
+  background-color: #0f3460;
+  border-color: #533483;
+  box-shadow: 0 0 20rpx rgba(15, 52, 96, 0.5);
+}
+
+.action-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.action-player {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.action-phase {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.action-content {
+  display: flex;
+  gap: 20rpx;
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+
+.action-type {
+  color: #0f3460;
+  font-weight: bold;
+}
+
+.analysis-summary {
+  display: flex;
+  justify-content: space-around;
+  margin: 30rpx 0;
+  padding: 30rpx;
+  background-color: #16213e;
+  border-radius: 15rpx;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.summary-label {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.summary-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #0f3460;
+}
+
+.analysis-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.analysis-content {
+  background-color: #1a1a2e;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  width: 85%;
+  max-width: 700rpx;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 2rpx solid #533483;
+}
+
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.close-btn {
+  font-size: 60rpx;
+  color: #a0a0a0;
+  line-height: 1;
+}
+
+.mistakes-list {
+  margin-top: 20rpx;
+}
+
+.mistake-item {
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  border-left: 4rpx solid #e94560;
+}
+
+.mistake-header {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #e94560;
+  margin-bottom: 15rpx;
+}
+
+.mistake-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+
+.mistake-content .frequencies {
+  margin-top: 10rpx;
+  padding: 10rpx;
+  background-color: #1a1a2e;
+  border-radius: 5rpx;
+  font-size: 24rpx;
+}
+
+.no-mistakes {
+  text-align: center;
+  padding: 60rpx 20rpx;
+  color: #0f3460;
+  font-size: 32rpx;
+  font-weight: bold;
+}

@@ -1,0 +1,56 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 用户统计卡片 -->
+  <view class="card">
+    <view class="title">我的数据</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{userStats.totalGames}}</view>
+        <view class="stat-label">总对局</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{userStats.accuracy}}%</view>
+        <view class="stat-label">准确率</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{userStats.winRate}}%</view>
+        <view class="stat-label">胜率</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快速操作 -->
+  <view class="card">
+    <view class="title">快速开始</view>
+    <view class="quick-actions">
+      <view 
+        class="action-item" 
+        wx:for="{{quickActions}}" 
+        wx:key="id"
+        data-path="{{item.path}}"
+        bindtap="onQuickAction"
+      >
+        <view class="action-icon">{{item.icon}}</view>
+        <view class="action-content">
+          <view class="action-title">{{item.title}}</view>
+          <view class="action-desc">{{item.desc}}</view>
+        </view>
+        <view class="action-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近复盘 -->
+  <view class="card">
+    <view class="title">最近复盘</view>
+    <view class="recent-replays">
+      <view class="btn btn-primary" bindtap="viewReplay">查看全部复盘记录</view>
+    </view>
+  </view>
+
+  <!-- 学习推荐 -->
+  <view class="card">
+    <view class="title">学习推荐</view>
+    <view class="btn btn-secondary" bindtap="viewKnowledge">进入知识库</view>
+  </view>
+</view>

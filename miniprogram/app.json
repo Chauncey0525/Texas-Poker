@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/simulation/simulation",
+    "pages/replay/replay",
+    "pages/replay/detail/detail",
+    "pages/gto-advice/gto-advice",
+    "pages/knowledge/knowledge",
+    "pages/knowledge/article/article",
+    "pages/hand-analyzer/hand-analyzer",
+    "pages/range-analyzer/range-analyzer",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1a1a2e",
+    "navigationBarTitleText": "德州扑克GTO",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#16213e"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#0f3460",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/simulation/simulation",
+        "text": "模拟"
+      },
+      {
+        "pagePath": "pages/replay/replay",
+        "text": "复盘"
+      },
+      {
+        "pagePath": "pages/knowledge/knowledge",
+        "text": "知识库"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

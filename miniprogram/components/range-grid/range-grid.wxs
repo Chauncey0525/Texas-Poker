@@ -1,0 +1,50 @@
+// components/range-grid/range-grid.wxs
+var ranks = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+
+function getHandString(row, col) {
+  var rank1 = ranks[row];
+  var rank2 = ranks[col];
+  
+  if (row === col) {
+    return rank1 + rank2;
+  } else if (row < col) {
+    return rank1 + rank2 + 's';
+  } else {
+    return rank2 + rank1 + 'o';
+  }
+}
+
+function getHandClass(row, col, range, compareRange, mode, selectedHands) {
+  var hand = getHandString(row, col);
+  var isSelected = false;
+  
+  // 检查是否在selectedHands中
+  if (selectedHands && selectedHands.length > 0) {
+    for (var i = 0; i < selectedHands.length; i++) {
+      if (selectedHands[i] === hand) {
+        isSelected = true;
+        break;
+      }
+    }
+  }
+  
+  if (mode === 'compare') {
+    var inRange = range && range[hand];
+    var inCompare = compareRange && compareRange[hand];
+    
+    if (inRange && inCompare) {
+      return 'hand-cell both';
+    } else if (inRange) {
+      return 'hand-cell range-only';
+    } else if (inCompare) {
+      return 'hand-cell compare-only';
+    }
+  }
+  
+  return isSelected ? 'hand-cell selected' : 'hand-cell';
+}
+
+module.exports = {
+  getHandClass: getHandClass,
+  getHandString: getHandString
+};

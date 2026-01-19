@@ -1,0 +1,155 @@
+/* components/range-grid/range-grid.wxss */
+.range-grid-container {
+  width: 100%;
+  padding: 20rpx;
+}
+
+.range-grid {
+  display: flex;
+  flex-direction: column;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  overflow-x: auto;
+}
+
+.grid-header {
+  display: flex;
+  margin-bottom: 10rpx;
+}
+
+.header-cell {
+  width: 60rpx;
+  height: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #a0a0a0;
+  font-weight: bold;
+}
+
+.grid-row {
+  display: flex;
+  margin-bottom: 5rpx;
+}
+
+.row-header {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #a0a0a0;
+  font-weight: bold;
+  margin-right: 5rpx;
+}
+
+.hand-cell {
+  width: 60rpx;
+  height: 60rpx;
+  margin: 2rpx;
+  background-color: #0f3460;
+  border: 2rpx solid #1a1a2e;
+  border-radius: 6rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.hand-cell.selected {
+  background-color: #0f3460;
+  border-color: #4a90e2;
+  box-shadow: 0 0 10rpx rgba(74, 144, 226, 0.5);
+}
+
+.hand-cell:active {
+  transform: scale(0.95);
+}
+
+.hand-text {
+  font-size: 20rpx;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* 对比模式样式 */
+.hand-cell.both {
+  background-color: #4a90e2;
+  border-color: #4a90e2;
+}
+
+.hand-cell.range-only {
+  background-color: #0f3460;
+  border-color: #4a90e2;
+}
+
+.hand-cell.compare-only {
+  background-color: #e24a4a;
+  border-color: #e24a4a;
+}
+
+/* 图例 */
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 30rpx;
+  gap: 30rpx;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.legend-color {
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 4rpx;
+  border: 2rpx solid #1a1a2e;
+}
+
+.legend-color.both {
+  background-color: #4a90e2;
+}
+
+.legend-color.range-only {
+  background-color: #0f3460;
+  border-color: #4a90e2;
+}
+
+.legend-color.compare-only {
+  background-color: #e24a4a;
+}
+
+/* 操作按钮 */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  margin-top: 30rpx;
+}
+
+.btn {
+  padding: 10rpx 30rpx;
+  background-color: #0f3460;
+  color: #ffffff;
+  border: none;
+  border-radius: 6rpx;
+  font-size: 24rpx;
+}
+
+.btn-small {
+  padding: 8rpx 20rpx;
+  font-size: 22rpx;
+}
+
+.btn:active {
+  background-color: #1a1a2e;
+}

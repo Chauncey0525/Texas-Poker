@@ -1,0 +1,240 @@
+/* pages/simulation/simulation.wxss */
+.game-setup {
+  padding: 20rpx;
+}
+
+.preset-section {
+  margin-bottom: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 2rpx solid #533483;
+}
+
+.preset-title {
+  font-size: 28rpx;
+  color: #a0a0a0;
+  margin-bottom: 20rpx;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 15rpx;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 15rpx;
+  background-color: #16213e;
+  border: 2rpx solid #533483;
+  border-radius: 10rpx;
+  color: #ffffff;
+  font-size: 26rpx;
+}
+
+.preset-btn:active {
+  background-color: #0f3460;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #533483;
+  flex-wrap: wrap;
+}
+
+.setting-item text {
+  font-size: 32rpx;
+  color: #ffffff;
+}
+
+.setting-item .hint {
+  font-size: 24rpx;
+  color: #7A7E83;
+  width: 100%;
+  margin-top: 10rpx;
+}
+
+.hint-text {
+  font-size: 24rpx;
+  color: #7A7E83;
+  margin-top: -20rpx;
+  margin-bottom: 20rpx;
+  padding-left: 20rpx;
+}
+
+.settings-summary {
+  margin: 30rpx 0;
+  padding: 20rpx;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+
+.picker {
+  color: #0f3460;
+  font-size: 32rpx;
+}
+
+.game-board {
+  padding: 20rpx;
+}
+
+.game-info {
+  margin-bottom: 20rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10rpx 0;
+  font-size: 28rpx;
+}
+
+.community-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.card-item {
+  width: 80rpx;
+  height: 120rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2rpx solid #0f3460;
+}
+
+.card-suit {
+  font-size: 32rpx;
+  color: #e94560;
+}
+
+.card-rank {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #1a1a2e;
+}
+
+.card-back {
+  width: 80rpx;
+  height: 120rpx;
+  background-color: #0f3460;
+  border-radius: 10rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60rpx;
+  color: #ffffff;
+}
+
+.players-section {
+  margin: 30rpx 0;
+}
+
+.player-card {
+  background-color: #16213e;
+  border-radius: 15rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border: 2rpx solid #533483;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.player-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.player-chips {
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.player-cards {
+  display: flex;
+  gap: 20rpx;
+  margin: 20rpx 0;
+}
+
+.player-status {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  color: #e94560;
+}
+
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background-color: #1a1a2e;
+  border-top: 2rpx solid #533483;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.gto-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.gto-content {
+  background-color: #1a1a2e;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  width: 80%;
+  max-width: 600rpx;
+  border: 2rpx solid #533483;
+}
+
+.gto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30rpx;
+}
+
+.close-btn {
+  font-size: 60rpx;
+  color: #a0a0a0;
+  line-height: 1;
+}
+
+.gto-body {
+  margin-top: 20rpx;
+}
+
+.advice-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #533483;
+  font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}

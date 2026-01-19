@@ -1,0 +1,31 @@
+<!--pages/knowledge/article/article.wxml-->
+<view class="container" wx:if="{{article}}">
+  <view class="article-header">
+    <view class="article-title">{{article.title}}</view>
+    <view class="article-meta">
+      <text class="article-category">{{article.categoryName}}</text>
+      <text class="article-date">{{article.date}}</text>
+    </view>
+  </view>
+
+  <view class="article-content">
+    <rich-text nodes="{{article.content}}"></rich-text>
+  </view>
+
+  <view wx:if="{{article.relatedArticles && article.relatedArticles.length > 0}}" class="related-articles">
+    <view class="section-title">相关文章</view>
+    <view 
+      class="related-item"
+      wx:for="{{article.relatedArticles}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="viewRelatedArticle"
+    >
+      <text>{{item.title}}</text>
+    </view>
+  </view>
+</view>
+
+<view wx:else class="loading">
+  <text>加载中...</text>
+</view>

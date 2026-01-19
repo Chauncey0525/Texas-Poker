@@ -1,0 +1,53 @@
+<!--components/range-grid/range-grid.wxml-->
+<wxs module="utils" src="./range-grid.wxs"></wxs>
+<view class="range-grid-container">
+  <view class="range-grid">
+    <!-- 列标题 -->
+    <view class="grid-header">
+      <view class="header-cell"></view>
+      <view class="header-cell" wx:for="{{ranks}}" wx:key="index">{{item}}</view>
+    </view>
+    
+    <!-- 网格行 -->
+    <view class="grid-row" wx:for="{{ranks}}" wx:for-item="rowRank" wx:for-index="row" wx:key="row">
+      <!-- 行标题 -->
+      <view class="row-header">{{rowRank}}</view>
+      
+      <!-- 手牌单元格 -->
+      <view 
+        class="{{utils.getHandClass(row, col, range, compareRange, mode, selectedHandsList)}}"
+        wx:for="{{ranks}}" 
+        wx:for-item="colRank" 
+        wx:for-index="col" 
+        wx:key="col"
+        data-row="{{row}}"
+        data-col="{{col}}"
+        bindtap="onHandClick"
+      >
+        <text class="hand-text">{{rowRank}}{{colRank}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 图例（对比模式） -->
+  <view wx:if="{{mode === 'compare'}}" class="legend">
+    <view class="legend-item">
+      <view class="legend-color both"></view>
+      <text>两个范围都有</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-color range-only"></view>
+      <text>只在主范围</text>
+    </view>
+    <view class="legend-item">
+      <view class="legend-color compare-only"></view>
+      <text>只在对比范围</text>
+    </view>
+  </view>
+  
+  <!-- 操作按钮（编辑模式） -->
+  <view wx:if="{{editable}}" class="actions">
+    <button class="btn btn-small" bindtap="clearAll">清除</button>
+    <button class="btn btn-small" bindtap="selectAll">全选</button>
+  </view>
+</view>

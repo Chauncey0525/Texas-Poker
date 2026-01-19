@@ -1,0 +1,66 @@
+<!--components/hand-selector/hand-selector.wxml-->
+<view class="hand-selector">
+  <!-- 已选择的手牌显示 -->
+  <view class="selected-hand" bindtap="showHandSelector">
+    <view wx:if="{{selectedCards.length === 0}}" class="placeholder">
+      <text>点击选择手牌</text>
+    </view>
+    <view wx:else class="hand-cards">
+      <view class="card-item" wx:for="{{selectedCards}}" wx:key="index">
+        <text class="card-suit">{{item.suit}}</text>
+        <text class="card-rank">{{item.rank}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 手牌选择器弹窗 -->
+  <view wx:if="{{showSelector}}" class="selector-modal" bindtap="hideHandSelector">
+    <view class="selector-content" catchtap="stopPropagation">
+      <view class="selector-header">
+        <text class="title">选择手牌</text>
+        <text class="close-btn" bindtap="hideHandSelector">×</text>
+      </view>
+      
+      <view class="selected-preview">
+        <text wx:if="{{selectedCards.length === 0}}">请选择2张牌</text>
+        <view wx:else class="preview-cards">
+          <view class="card-item" wx:for="{{selectedCards}}" wx:key="index">
+            <text class="card-suit">{{item.suit}}</text>
+            <text class="card-rank">{{item.rank}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="card-grid">
+        <view 
+          class="card-cell {{isCardSelected(item.suit, item.rank) ? 'selected' : ''}}"
+          wx:for="{{ranks}}" 
+          wx:for-item="rank"
+          wx:key="rank"
+        >
+          <view 
+            class="card-row"
+            wx:for="{{suits}}" 
+            wx:for-item="suit"
+            wx:key="suit"
+          >
+            <view 
+              class="card-option {{isCardSelected(suit, rank) ? 'selected' : ''}}"
+              data-suit="{{suit}}"
+              data-rank="{{rank}}"
+              bindtap="selectCard"
+            >
+              <text class="card-suit-small">{{suit}}</text>
+              <text class="card-rank-small">{{rank}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="selector-actions">
+        <button class="btn btn-secondary" bindtap="clearSelection">清除</button>
+        <button class="btn btn-primary" bindtap="confirmSelection">确认</button>
+      </view>
+    </view>
+  </view>
+</view>

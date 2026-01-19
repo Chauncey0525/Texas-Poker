@@ -1,0 +1,53 @@
+/* pages/replay/replay.wxss */
+.header {
+  margin-bottom: 20rpx;
+}
+
+.history-list {
+  margin-bottom: 100rpx;
+}
+
+.history-item {
+  margin-bottom: 20rpx;
+  position: relative;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.item-time {
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.item-id {
+  font-size: 24rpx;
+  color: #7A7E83;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  margin: 20rpx 0;
+  font-size: 28rpx;
+}
+
+.item-actions {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 20rpx;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx;
+  background-color: #1a1a2e;
+  border-top: 2rpx solid #533483;
+}

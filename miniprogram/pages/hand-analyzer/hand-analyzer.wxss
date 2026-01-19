@@ -1,0 +1,78 @@
+/* pages/hand-analyzer/hand-analyzer.wxss */
+.input-section {
+  margin-top: 30rpx;
+}
+
+.input-group {
+  margin-bottom: 30rpx;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: #a0a0a0;
+  margin-bottom: 10rpx;
+}
+
+.hint {
+  color: #7A7E83;
+  font-size: 28rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.cards {
+  display: flex;
+  gap: 20rpx;
+  flex-wrap: wrap;
+}
+
+.card-item {
+  width: 80rpx;
+  height: 120rpx;
+  background-color: #ffffff;
+  border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2rpx solid #0f3460;
+}
+
+.card-suit {
+  font-size: 32rpx;
+  color: #e94560;
+}
+
+.card-rank {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #1a1a2e;
+}
+
+.analysis-result {
+  margin-top: 30rpx;
+}
+
+.result-content {
+  margin-top: 30rpx;
+}
+
+.result-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #533483;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-label {
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.result-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #0f3460;
+}

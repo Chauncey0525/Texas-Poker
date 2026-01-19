@@ -1,0 +1,72 @@
+/* pages/index/index.wxss */
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30rpx;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #0f3460;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.quick-actions {
+  margin-top: 20rpx;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  background-color: #16213e;
+  border-radius: 15rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.action-item:active {
+  background-color: #0f3460;
+  border-color: #533483;
+}
+
+.action-icon {
+  font-size: 60rpx;
+  margin-right: 30rpx;
+}
+
+.action-content {
+  flex: 1;
+}
+
+.action-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #ffffff;
+}
+
+.action-desc {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.action-arrow {
+  font-size: 40rpx;
+  color: #7A7E83;
+}
+
+.recent-replays {
+  margin-top: 20rpx;
+}

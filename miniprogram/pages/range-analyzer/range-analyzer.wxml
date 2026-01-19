@@ -1,0 +1,42 @@
+<!--pages/range-analyzer/range-analyzer.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="title">范围分析器</view>
+    <view class="input-section">
+      <view class="input-group">
+        <text class="label">位置</text>
+        <picker mode="selector" range="{{positions}}" value="{{positions.indexOf(position)}}" bindchange="setPosition">
+          <view class="picker">{{position}}</view>
+        </picker>
+      </view>
+      
+      <view class="stats">
+        <text class="stat-item">范围大小: {{rangePercentage}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card range-display">
+    <view class="title-section">
+      <text class="title">{{position}} 位置起手牌范围</text>
+      <view class="actions">
+        <button class="btn btn-small" bindtap="toggleEdit">{{editable ? '完成编辑' : '编辑范围'}}</button>
+        <button class="btn btn-small" bindtap="toggleCompare">{{compareMode ? '退出对比' : '对比模式'}}</button>
+      </view>
+    </view>
+    
+    <range-grid
+      range="{{range}}"
+      compareRange="{{compareRange}}"
+      editable="{{editable}}"
+      mode="{{compareMode ? 'compare' : 'normal'}}"
+      bind:change="onRangeChange"
+    />
+    
+    <view class="toolbar">
+      <button class="btn btn-secondary" bindtap="resetRange">重置</button>
+      <button class="btn btn-secondary" bindtap="saveRange">保存</button>
+      <button class="btn btn-secondary" bindtap="loadSavedRange">加载</button>
+    </view>
+  </view>
+</view>

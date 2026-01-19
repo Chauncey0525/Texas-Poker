@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "hand-selector": "../../components/hand-selector/hand-selector",
+    "community-cards-selector": "../../components/community-cards-selector/community-cards-selector"
+  }
+}

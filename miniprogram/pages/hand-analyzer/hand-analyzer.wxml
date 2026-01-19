@@ -1,0 +1,56 @@
+<!--pages/hand-analyzer/hand-analyzer.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="title">手牌分析器</view>
+    <view class="input-section">
+      <view class="input-group">
+        <text class="label">你的手牌</text>
+        <hand-selector 
+          selectedHand="{{userHand}}"
+          bind:change="onHandChange"
+        />
+      </view>
+
+      <view class="input-group">
+        <text class="label">公共牌（可选）</text>
+        <community-cards-selector
+          selectedCards="{{communityCards}}"
+          maxCards="{{5}}"
+          bind:change="onCommunityCardsChange"
+        />
+      </view>
+
+      <button class="btn btn-primary" bindtap="analyze">分析</button>
+    </view>
+  </view>
+
+  <view wx:if="{{analysis}}" class="card analysis-result">
+    <view class="title">分析结果</view>
+    <view class="result-content">
+      <view class="result-item">
+        <text class="result-label">阶段:</text>
+        <text class="result-value">{{analysis.stage}}</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">手牌类型:</text>
+        <text class="result-value">{{analysis.handType}}</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">牌力强度:</text>
+        <text class="result-value">{{analysis.strengthPercent}}%</text>
+      </view>
+      <view wx:if="{{analysis.winRatePercent}}" class="result-item">
+        <text class="result-label">胜率估算:</text>
+        <text class="result-value">{{analysis.winRatePercent}}%</text>
+      </view>
+      <view class="result-item">
+        <text class="result-label">评估:</text>
+        <text class="result-value">{{analysis.message}}</text>
+      </view>
+      <view wx:if="{{analysis.possibleHandsText}}" class="result-item">
+        <text class="result-label">可能的成牌:</text>
+        <text class="result-value">{{analysis.possibleHandsText}}</text>
+      </view>
+    </view>
+  </view>
+</view>

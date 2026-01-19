@@ -1,0 +1,39 @@
+<!--components/bet-input/bet-input.wxml-->
+<view wx:if="{{showInput}}" class="bet-input-modal" bindtap="cancel">
+  <view class="bet-input-content" catchtap="stopPropagation">
+    <view class="bet-input-header">
+      <text class="title">下注金额</text>
+      <text class="close-btn" bindtap="cancel">×</text>
+    </view>
+    
+    <view class="bet-input-body">
+      <view class="info-row">
+        <text>当前下注: {{currentBet}}</text>
+        <text>你的筹码: {{playerChips}}</text>
+      </view>
+      
+      <view class="quick-select">
+        <button class="quick-btn" data-type="min" bindtap="onQuickSelect">最小</button>
+        <button class="quick-btn" data-type="half" bindtap="onQuickSelect">一半</button>
+        <button class="quick-btn" data-type="pot" bindtap="onQuickSelect">底池</button>
+        <button class="quick-btn" data-type="all" bindtap="onQuickSelect">全押</button>
+      </view>
+      
+      <view class="amount-input">
+        <text class="label">下注金额:</text>
+        <input 
+          class="input" 
+          type="number" 
+          value="{{betAmount}}" 
+          bindinput="onAmountInput"
+          placeholder="请输入下注金额"
+        />
+      </view>
+      
+      <view class="bet-actions">
+        <button class="btn btn-secondary" bindtap="cancel">取消</button>
+        <button class="btn btn-primary" bindtap="confirmBet">确认</button>
+      </view>
+    </view>
+  </view>
+</view>

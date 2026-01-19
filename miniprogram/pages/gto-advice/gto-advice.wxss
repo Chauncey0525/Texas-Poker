@@ -1,0 +1,66 @@
+/* pages/gto-advice/gto-advice.wxss */
+.input-section {
+  margin-top: 30rpx;
+}
+
+.input-group {
+  margin-bottom: 30rpx;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  color: #a0a0a0;
+  margin-bottom: 10rpx;
+}
+
+.hand-selector {
+  padding: 20rpx;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  border: 2rpx solid #533483;
+}
+
+.advice-result {
+  margin-top: 30rpx;
+}
+
+.advice-content {
+  margin-top: 30rpx;
+}
+
+.advice-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #533483;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.advice-label {
+  font-size: 28rpx;
+  color: #a0a0a0;
+}
+
+.advice-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #0f3460;
+}
+
+.frequencies {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  margin-top: 10rpx;
+  font-size: 28rpx;
+}
+
+.community-cards-hint {
+  padding: 20rpx;
+  background-color: #16213e;
+  border-radius: 10rpx;
+  color: #7A7E83;
+  font-size: 24rpx;
+  text-align: center;
+}

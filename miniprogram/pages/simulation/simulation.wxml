@@ -1,0 +1,137 @@
+<!--pages/simulation/simulation.wxml-->
+<view class="container">
+  <view wx:if="{{!gameState}}" class="game-setup">
+    <view class="card">
+      <view class="title">游戏设置</view>
+      
+      <!-- 预设配置 -->
+      <view class="preset-section">
+        <view class="preset-title">快速开始</view>
+        <view class="preset-buttons">
+          <button class="preset-btn" data-preset="quick" bindtap="usePreset">快速局</button>
+          <button class="preset-btn" data-preset="standard" bindtap="usePreset">标准局</button>
+          <button class="preset-btn" data-preset="tournament" bindtap="usePreset">锦标赛</button>
+        </view>
+      </view>
+      
+      <view class="setting-item">
+        <text>玩家数量</text>
+        <picker mode="selector" range="{{[2,3,4,5,6]}}" value="{{gameSettings.playerCount - 2}}" bindchange="onPlayerCountChange">
+          <view class="picker">{{gameSettings.playerCount}}人</view>
+        </picker>
+      </view>
+      <view class="setting-item">
+        <text>初始筹码</text>
+        <input class="input" type="number" value="{{gameSettings.initialChips}}" bindinput="onChipsChange" />
+      </view>
+      <view class="setting-item">
+        <text>小盲注</text>
+        <input class="input" type="number" value="{{gameSettings.smallBlind}}" bindinput="onSmallBlindChange" />
+      </view>
+      <view class="setting-item">
+        <text>大盲注</text>
+        <input class="input" type="number" value="{{gameSettings.bigBlind}}" bindinput="onBigBlindChange" />
+      </view>
+      <view class="hint-text">（至少为小盲注的2倍）</view>
+      
+      <view class="settings-summary">
+        <text>盲注级别: {{gameSettings.smallBlind}}/{{gameSettings.bigBlind}}</text>
+        <text>起始筹码深度: {{chipDepth}} BB</text>
+      </view>
+      
+      <button class="btn btn-primary" bindtap="startNewGame">开始游戏</button>
+    </view>
+  </view>
+
+  <view wx:else class="game-board">
+    <!-- 游戏信息 -->
+    <view class="game-info card">
+      <view class="info-row">
+        <text>底池: {{gameState.pot}}</text>
+        <text>当前下注: {{gameState.currentBet}}</text>
+      </view>
+      <view class="info-row">
+        <text>阶段: {{gameState.gamePhase}}</text>
+        <text>当前玩家: {{gameState.players[gameState.currentPlayerIndex].name}}</text>
+      </view>
+    </view>
+
+    <!-- 公共牌 -->
+    <view class="card">
+      <view class="title">公共牌</view>
+      <view class="community-cards">
+        <view class="card-item" wx:for="{{gameState.communityCards}}" wx:key="index">
+          <text class="card-suit">{{item.suit}}</text>
+          <text class="card-rank">{{item.rank}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 玩家信息 -->
+    <view class="players-section">
+      <view class="player-card" wx:for="{{gameState.players}}" wx:key="id" wx:for-item="player">
+        <view class="player-header">
+          <text class="player-name">{{player.name}}</text>
+          <text class="player-chips">筹码: {{player.chips}}</text>
+        </view>
+        <view class="player-cards" wx:if="{{player.isHuman || gameState.gamePhase === 'ended'}}">
+          <view class="card-item" wx:for="{{player.cards}}" wx:key="index" wx:for-item="card">
+            <text class="card-suit">{{card.suit}}</text>
+            <text class="card-rank">{{card.rank}}</text>
+          </view>
+        </view>
+        <view wx:else class="card-back">🂠</view>
+        <view class="player-status">
+          <text wx:if="{{player.folded}}">已弃牌</text>
+          <text wx:if="{{player.allIn}}">全押</text>
+          <text wx:if="{{player.currentBet > 0}}">下注: {{player.currentBet}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view wx:if="{{gameState.players[gameState.currentPlayerIndex].isHuman && !gameState.players[gameState.currentPlayerIndex].folded}}" class="action-buttons card">
+      <button class="btn btn-primary" bindtap="getGTOAdvice">获取GTO建议</button>
+      <button class="btn btn-secondary" bindtap="onCheck" wx:if="{{gameState.currentBet === 0}}">过牌</button>
+      <button class="btn btn-secondary" bindtap="onCall" wx:if="{{gameState.currentBet > 0}}">跟注 {{gameState.currentBet - gameState.players[gameState.currentPlayerIndex].currentBet > 0 ? gameState.currentBet - gameState.players[gameState.currentPlayerIndex].currentBet : ''}}</button>
+      <button class="btn btn-secondary" bindtap="showBetInput">下注</button>
+      <button class="btn btn-danger" bindtap="onFold">弃牌</button>
+      <button class="btn btn-danger" bindtap="onAllIn">全押</button>
+    </view>
+
+    <!-- 下注输入组件 -->
+    <bet-input
+      currentBet="{{gameState.currentBet}}"
+      playerChips="{{gameState.players[gameState.currentPlayerIndex].chips}}"
+      minBet="{{gameState.currentBet}}"
+      bind:confirm="onBetConfirm"
+    />
+
+    <!-- GTO建议弹窗 -->
+    <view wx:if="{{showGTOAdvice}}" class="gto-modal" bindtap="closeGTOAdvice">
+      <view class="gto-content" catchtap="stopPropagation">
+        <view class="gto-header">
+          <text class="title">GTO建议</text>
+          <text class="close-btn" bindtap="closeGTOAdvice">×</text>
+        </view>
+        <view wx:if="{{isLoading}}" class="loading">加载中...</view>
+        <view wx:else class="gto-body">
+          <view wx:if="{{gtoAdvice}}">
+            <view class="advice-item">
+              <text>推荐动作: {{gtoAdvice.recommendedAction}}</text>
+            </view>
+            <view class="advice-item">
+              <text>期望价值: {{gtoAdvice.ev}}</text>
+            </view>
+            <view class="advice-item" wx:if="{{gtoAdvice.frequencies}}">
+              <text>动作频率:</text>
+              <text>弃牌: {{gtoAdvice.frequencies.fold}}%</text>
+              <text>跟注: {{gtoAdvice.frequencies.call}}%</text>
+              <text>加注: {{gtoAdvice.frequencies.raise}}%</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
