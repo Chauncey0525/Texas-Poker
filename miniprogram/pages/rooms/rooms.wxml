@@ -108,21 +108,27 @@
   <!-- 房间列表 -->
   <view class="room-list">
     <block wx:if="{{loading && rooms.length === 0}}">
-      <view class="loading">加载中...</view>
+      <skeleton type="list" rows="3" />
     </block>
     
     <block wx:elif="{{rooms.length === 0}}">
-      <view class="empty">
-        <text wx:if="{{searchKeyword || filterPlayerCount !== null}}">
-          没有找到符合条件的房间
-        </text>
-        <text wx:else>暂无房间</text>
+      <view class="empty-state">
+        <view class="empty-state-icon">🏠</view>
+        <view class="empty-state-text">
+          <text wx:if="{{searchKeyword || filterPlayerCount !== null}}">
+            没有找到符合条件的房间
+          </text>
+          <text wx:else>暂无房间</text>
+        </view>
+        <view class="empty-state-desc" wx:if="{{!searchKeyword && filterPlayerCount === null}}">
+          点击上方按钮创建房间开始游戏
+        </view>
       </view>
     </block>
 
     <block wx:else>
       <view 
-        class="room-item"
+        class="room-item fade-in"
         wx:for="{{rooms}}"
         wx:key="roomId"
         data-roomid="{{item.roomId}}"

@@ -28,11 +28,13 @@
   <view class="articles-section">
     <view class="title">文章列表 ({{filteredArticles.length}})</view>
     <view wx:if="{{filteredArticles.length === 0}}" class="empty-state">
-      <text>暂无文章</text>
+      <view class="empty-state-icon">📚</view>
+      <view class="empty-state-text">暂无文章</view>
+      <view class="empty-state-desc" wx:if="{{searchKeyword}}">尝试其他关键词搜索</view>
     </view>
     <view wx:else class="articles-list">
       <view 
-        class="article-item card"
+        class="article-item card fade-in"
         wx:for="{{filteredArticles}}"
         wx:key="id"
         wx:for-item="article"

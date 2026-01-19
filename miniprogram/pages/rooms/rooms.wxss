@@ -250,10 +250,26 @@
   font-size: 26rpx;
 }
 
-.loading,
-.empty {
+/* 空状态 */
+.empty-state {
   text-align: center;
-  padding: 100rpx 0;
-  color: #999;
-  font-size: 28rpx;
+  padding: 100rpx 40rpx;
+}
+
+.empty-state-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 32rpx;
+  color: #fff;
+  margin-bottom: 20rpx;
+  font-weight: 500;
+}
+
+.empty-state-desc {
+  font-size: 26rpx;
+  color: #a0a0a0;
 }

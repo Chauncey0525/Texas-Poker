@@ -6,13 +6,14 @@
   </view>
 
   <view wx:if="{{gameHistory.length === 0}}" class="empty-state">
-    <text>暂无复盘记录</text>
-    <text>开始模拟练习后，记录会自动保存</text>
+    <view class="empty-state-icon">📊</view>
+    <view class="empty-state-text">暂无复盘记录</view>
+    <view class="empty-state-desc">开始模拟练习后，记录会自动保存</view>
   </view>
 
   <view wx:else class="history-list">
     <view 
-      class="history-item card" 
+      class="history-item card fade-in" 
       wx:for="{{gameHistory}}" 
       wx:key="id"
       data-index="{{index}}"
