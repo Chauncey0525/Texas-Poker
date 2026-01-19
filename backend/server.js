@@ -1,11 +1,21 @@
 // backend/server.js
 const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 
 // 中间件
@@ -18,11 +28,13 @@ const gtoRoutes = require('./routes/gto');
 const gamesRoutes = require('./routes/games');
 const usersRoutes = require('./routes/users');
 const analysisRoutes = require('./routes/analysis');
+const roomsRoutes = require('./routes/rooms');
 
 app.use('/api/gto', gtoRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/analysis', analysisRoutes);
+app.use('/api/rooms', roomsRoutes);
 
 // 健康检查
 app.get('/health', (req, res) => {
@@ -44,9 +56,14 @@ mongoose
     console.error('数据库连接失败', err);
   });
 
+// WebSocket 连接管理
+const socketHandlers = require('./services/socket-handlers');
+socketHandlers.initialize(io);
+
 // 启动服务器
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT}`);
+  console.log(`WebSocket 服务器已启动`);
 });
 
-module.exports = app;
+module.exports = { app, server, io };

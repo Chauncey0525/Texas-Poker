@@ -8,6 +8,13 @@ Page({
     },
     quickActions: [
       {
+        id: 'multiplayer',
+        title: '多人联机',
+        desc: '与好友进行实时对战',
+        icon: '🎯',
+        path: '/pages/rooms/rooms'
+      },
+      {
         id: 'simulation',
         title: '开始模拟',
         desc: '与AI对手进行模拟对局',

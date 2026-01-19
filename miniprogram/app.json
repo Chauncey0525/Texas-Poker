@@ -9,7 +9,10 @@
     "pages/knowledge/article/article",
     "pages/hand-analyzer/hand-analyzer",
     "pages/range-analyzer/range-analyzer",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/rooms/rooms",
+    "pages/rooms/create/create",
+    "pages/rooms/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -26,23 +29,33 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
       },
       {
         "pagePath": "pages/simulation/simulation",
-        "text": "模拟"
+        "text": "模拟",
+        "iconPath": "images/simulation.png",
+        "selectedIconPath": "images/simulation-active.png"
       },
       {
         "pagePath": "pages/replay/replay",
-        "text": "复盘"
+        "text": "复盘",
+        "iconPath": "images/replay.png",
+        "selectedIconPath": "images/replay-active.png"
       },
       {
         "pagePath": "pages/knowledge/knowledge",
-        "text": "知识库"
+        "text": "知识库",
+        "iconPath": "images/knowledge.png",
+        "selectedIconPath": "images/knowledge-active.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-active.png"
       }
     ]
   },

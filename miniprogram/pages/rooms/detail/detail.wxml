@@ -1,0 +1,106 @@
+<!--pages/rooms/detail/detail.wxml-->
+<view class="container">
+  <block wx:if="{{room}}">
+    <!-- 房间信息 -->
+    <view class="room-info-card">
+      <view class="room-header">
+        <view class="room-name">{{room.roomName}}</view>
+        <view class="room-status {{room.status}}">
+          {{room.status === 'waiting' ? '等待中' : '游戏中'}}
+        </view>
+      </view>
+      
+      <view class="room-settings">
+        <view class="setting-item">
+          <text class="label">盲注:</text>
+          <text class="value">{{room.settings.smallBlind}}/{{room.settings.bigBlind}}</text>
+        </view>
+        <view class="setting-item">
+          <text class="label">初始筹码:</text>
+          <text class="value">{{room.settings.initialChips}}</text>
+        </view>
+        <view class="setting-item">
+          <text class="label">房间号:</text>
+          <text class="value">{{room.roomId}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 玩家列表 -->
+    <view class="players-card">
+      <view class="card-title">玩家列表 ({{room.players.length}}/{{room.settings.maxPlayers}})</view>
+      <view class="players-list">
+        <view 
+          class="player-item {{item.userId === userInfo.userId ? 'me' : ''}}"
+          wx:for="{{room.players}}"
+          wx:key="userId"
+        >
+          <view class="player-avatar">{{item.nickname.charAt(0)}}</view>
+          <view class="player-info">
+            <view class="player-name">
+              {{item.nickname}}
+              <text wx:if="{{item.userId === room.ownerId}}" class="owner-badge">房主</text>
+            </view>
+            <view class="player-chips">筹码: {{item.chips}}</view>
+          </view>
+          <view class="player-status">
+            <view class="ready-status {{item.isReady ? 'ready' : 'not-ready'}}">
+              {{item.isReady ? '已准备' : '未准备'}}
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="actions" wx:if="{{isInRoom}}">
+      <button 
+        class="action-btn {{currentPlayerReady ? 'ready' : ''}}"
+        bindtap="onToggleReady"
+      >
+        {{currentPlayerReady ? '取消准备' : '准备'}}
+      </button>
+      
+      <button 
+        wx:if="{{isOwner && room.status === 'waiting'}}"
+        class="action-btn primary"
+        bindtap="onStartGame"
+        disabled="{{!allReady}}"
+      >
+        开始游戏
+      </button>
+      
+      <button 
+        class="action-btn danger"
+        bindtap="onLeaveRoom"
+      >
+        离开房间
+      </button>
+    </view>
+
+    <!-- 聊天区域 -->
+    <view class="chat-card">
+      <view class="card-title">聊天</view>
+      <scroll-view class="chat-messages" scroll-y scroll-top="{{chatScrollTop}}">
+        <view 
+          class="chat-message"
+          wx:for="{{chatMessages}}"
+          wx:key="index"
+        >
+          <text class="chat-nickname">{{item.nickname}}:</text>
+          <text class="chat-content">{{item.message}}</text>
+        </view>
+      </scroll-view>
+      <view class="chat-input-area">
+        <input 
+          class="chat-input"
+          type="text"
+          placeholder="输入消息..."
+          value="{{chatInput}}"
+          bindinput="onChatInput"
+        />
+        <button class="chat-send-btn" bindtap="onSendChat">发送</button>
+      </view>
+    </view>
+  </block>
+</view>

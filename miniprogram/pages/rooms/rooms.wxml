@@ -1,0 +1,77 @@
+<!--pages/rooms/rooms.wxml-->
+<view class="container">
+  <!-- 状态切换 -->
+  <view class="status-tabs">
+    <view 
+      class="tab-item {{status === 'waiting' ? 'active' : ''}}"
+      data-status="waiting"
+      bindtap="onStatusChange"
+    >
+      等待中
+    </view>
+    <view 
+      class="tab-item {{status === 'playing' ? 'active' : ''}}"
+      data-status="playing"
+      bindtap="onStatusChange"
+    >
+      游戏中
+    </view>
+  </view>
+
+  <!-- 创建房间按钮 -->
+  <view class="create-room-btn" bindtap="onCreateRoom">
+    <text class="icon">➕</text>
+    <text>创建房间</text>
+  </view>
+
+  <!-- 房间列表 -->
+  <view class="room-list">
+    <block wx:if="{{loading && rooms.length === 0}}">
+      <view class="loading">加载中...</view>
+    </block>
+    
+    <block wx:elif="{{rooms.length === 0}}">
+      <view class="empty">暂无房间</view>
+    </block>
+
+    <block wx:else>
+      <view 
+        class="room-item"
+        wx:for="{{rooms}}"
+        wx:key="roomId"
+        data-roomid="{{item.roomId}}"
+        data-password="{{item.password}}"
+        bindtap="onViewRoom"
+      >
+        <view class="room-header">
+          <view class="room-name">{{item.roomName}}</view>
+          <view class="room-status {{item.status}}">
+            {{item.status === 'waiting' ? '等待中' : '游戏中'}}
+          </view>
+        </view>
+        
+        <view class="room-info">
+          <view class="info-item">
+            <text class="label">房主:</text>
+            <text class="value">{{item.ownerName}}</text>
+          </view>
+          <view class="info-item">
+            <text class="label">人数:</text>
+            <text class="value">{{item.players.length}}/{{item.settings.maxPlayers}}</text>
+          </view>
+          <view class="info-item">
+            <text class="label">盲注:</text>
+            <text class="value">{{item.settings.smallBlind}}/{{item.settings.bigBlind}}</text>
+          </view>
+        </view>
+
+        <view class="room-footer">
+          <view class="room-id">房间号: {{item.roomId}}</view>
+          <view class="join-btn" catchtap="onJoinRoom" data-roomid="{{item.roomId}}" data-password="{{item.password}}">
+            加入
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

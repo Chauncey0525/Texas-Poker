@@ -5,6 +5,7 @@ module.exports = {
   // API配置
   apiBaseUrl: 'https://your-api-domain.com/api',
   gtoApiUrl: 'https://your-gto-api.com',
+  wsUrl: 'ws://localhost:3000', // WebSocket 地址
   
   // 游戏配置
   defaultSettings: {

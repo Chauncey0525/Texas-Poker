@@ -1,0 +1,91 @@
+<!--pages/rooms/create/create.wxml-->
+<view class="container">
+  <view class="form">
+    <!-- 房间名称 -->
+    <view class="form-item">
+      <view class="label">房间名称</view>
+      <input 
+        class="input"
+        type="text"
+        placeholder="请输入房间名称"
+        value="{{form.roomName}}"
+        bindinput="onRoomNameInput"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 房间密码 -->
+    <view class="form-item">
+      <view class="label">房间密码（可选）</view>
+      <input 
+        class="input"
+        type="text"
+        password
+        placeholder="不设置则为公开房间"
+        value="{{form.password}}"
+        bindinput="onPasswordInput"
+        maxlength="10"
+      />
+    </view>
+
+    <!-- 最大人数 -->
+    <view class="form-item">
+      <view class="label">最大人数</view>
+      <picker 
+        mode="selector"
+        range="{{[2,3,4,5,6,7,8,9,10]}}"
+        value="{{form.maxPlayers - 2}}"
+        bindchange="onMaxPlayersChange"
+      >
+        <view class="picker">{{form.maxPlayers}}人</view>
+      </picker>
+    </view>
+
+    <!-- 初始筹码 -->
+    <view class="form-item">
+      <view class="label">初始筹码</view>
+      <input 
+        class="input"
+        type="number"
+        placeholder="请输入初始筹码"
+        value="{{form.initialChips}}"
+        bindinput="onInitialChipsInput"
+      />
+    </view>
+
+    <!-- 小盲注 -->
+    <view class="form-item">
+      <view class="label">小盲注</view>
+      <input 
+        class="input"
+        type="number"
+        placeholder="请输入小盲注"
+        value="{{form.smallBlind}}"
+        bindinput="onSmallBlindInput"
+      />
+    </view>
+
+    <!-- 大盲注 -->
+    <view class="form-item">
+      <view class="label">大盲注</view>
+      <input 
+        class="input"
+        type="number"
+        placeholder="请输入大盲注"
+        value="{{form.bigBlind}}"
+        bindinput="onBigBlindInput"
+      />
+    </view>
+
+    <!-- 创建按钮 -->
+    <button 
+      class="submit-btn"
+      type="primary"
+      bindtap="onCreateRoom"
+      disabled="{{submitting}}"
+      loading="{{submitting}}"
+    >
+      创建房间
+    </button>
+  </view>
+</view>
