@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "多人游戏",
+  "usingComponents": {
+    "bet-input": "../../components/bet-input/bet-input"
+  }
+}

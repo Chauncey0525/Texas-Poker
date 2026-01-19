@@ -1,0 +1,355 @@
+/* pages/rooms/game/game.wxss */
+.container {
+  padding: 20rpx;
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.game-header {
+  background-color: rgba(15, 52, 96, 0.8);
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.room-name {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.hand-number {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.game-stats {
+  display: flex;
+  justify-content: space-around;
+  font-size: 28rpx;
+  margin: 10rpx 0;
+}
+
+.game-phase {
+  text-align: center;
+  font-size: 26rpx;
+  color: #0f3460;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 10rpx;
+  border-radius: 5rpx;
+}
+
+/* 玩家圆形布局 */
+.players-circle {
+  position: relative;
+  width: 600rpx;
+  height: 600rpx;
+  margin: 40rpx auto;
+  border: 2rpx dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.player-seat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  width: 120rpx;
+  text-align: center;
+}
+
+.my-seat {
+  border: 2rpx solid #0f3460;
+  border-radius: 10rpx;
+  padding: 10rpx;
+  background-color: rgba(15, 52, 96, 0.3);
+}
+
+.active-turn {
+  border: 2rpx solid #4caf50;
+  box-shadow: 0 0 20rpx rgba(76, 175, 80, 0.5);
+}
+
+.player-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 0 auto 10rpx;
+}
+
+.player-info {
+  font-size: 20rpx;
+}
+
+.player-name {
+  display: block;
+  font-size: 22rpx;
+  margin-bottom: 5rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-chips {
+  display: block;
+  font-size: 20rpx;
+  color: #4caf50;
+  margin-bottom: 5rpx;
+}
+
+.player-bet {
+  display: block;
+  font-size: 18rpx;
+  color: #ff9800;
+}
+
+.player-status {
+  margin-top: 5rpx;
+}
+
+.status-folded,
+.status-allin,
+.status-turn {
+  display: block;
+  font-size: 18rpx;
+  padding: 2rpx 6rpx;
+  border-radius: 4rpx;
+  margin-top: 5rpx;
+}
+
+.status-folded {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.status-allin {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+.status-turn {
+  background-color: #4caf50;
+  color: #fff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.player-cards {
+  display: flex;
+  gap: 5rpx;
+  margin-top: 10rpx;
+  justify-content: center;
+}
+
+/* 公共牌 */
+.community-cards-section {
+  background-color: rgba(15, 52, 96, 0.5);
+  border-radius: 10rpx;
+  padding: 20rpx;
+  margin: 20rpx 0;
+}
+
+.section-title {
+  font-size: 28rpx;
+  margin-bottom: 15rpx;
+  text-align: center;
+}
+
+.community-cards {
+  display: flex;
+  justify-content: center;
+  gap: 15rpx;
+  flex-wrap: wrap;
+}
+
+.card-item {
+  width: 80rpx;
+  height: 110rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-weight: bold;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.3);
+}
+
+.card-suit {
+  font-size: 24rpx;
+  color: #d32f2f;
+}
+
+.card-rank {
+  font-size: 28rpx;
+}
+
+.no-cards {
+  color: #a0a0a0;
+  font-size: 24rpx;
+  padding: 40rpx;
+}
+
+/* 操作面板 */
+.action-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(26, 26, 46, 0.95);
+  padding: 20rpx;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.3);
+}
+
+.timer {
+  text-align: center;
+  font-size: 28rpx;
+  color: #ff9800;
+  margin-bottom: 15rpx;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15rpx;
+  flex-wrap: wrap;
+}
+
+.btn {
+  flex: 1;
+  min-width: 120rpx;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  border: none;
+  color: #fff;
+}
+
+.btn-check {
+  background-color: #4caf50;
+}
+
+.btn-call {
+  background-color: #2196f3;
+}
+
+.btn-bet,
+.btn-raise {
+  background-color: #0f3460;
+}
+
+.btn-fold {
+  background-color: #f44336;
+}
+
+.btn-allin {
+  background-color: #ff9800;
+}
+
+/* 聊天面板 */
+.chat-panel {
+  position: fixed;
+  bottom: 200rpx;
+  left: 20rpx;
+  right: 20rpx;
+  background-color: rgba(26, 26, 46, 0.9);
+  border-radius: 10rpx;
+  max-height: 300rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 15rpx;
+  max-height: 200rpx;
+  overflow-y: auto;
+}
+
+.chat-message {
+  font-size: 24rpx;
+  margin-bottom: 10rpx;
+}
+
+.chat-nickname {
+  color: #0f3460;
+  font-weight: 500;
+  margin-right: 10rpx;
+}
+
+.chat-content {
+  color: #fff;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 10rpx;
+  padding: 15rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input {
+  flex: 1;
+  height: 60rpx;
+  padding: 0 15rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.chat-send-btn {
+  background-color: #0f3460;
+  color: #fff;
+  border: none;
+  border-radius: 30rpx;
+  padding: 0 30rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  font-size: 24rpx;
+}
+
+.leave-btn-container {
+  position: fixed;
+  top: 20rpx;
+  right: 20rpx;
+}
+
+.btn-leave {
+  background-color: rgba(244, 67, 54, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 20rpx;
+  padding: 10rpx 20rpx;
+  font-size: 24rpx;
+}
+
+.waiting-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.waiting-text {
+  font-size: 32rpx;
+  color: #a0a0a0;
+}
