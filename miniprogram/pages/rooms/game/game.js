@@ -20,7 +20,10 @@ Page({
     showBetInput: false,
     showRaiseInput: false,
     minBetAmount: 20,
-    minRaiseAmount: 40
+    minRaiseAmount: 40,
+    isReconnecting: false,
+    reconnectAttempts: 0,
+    maxReconnectAttempts: 5
   },
 
   onLoad(options) {
@@ -92,6 +95,25 @@ Page({
         wx.showToast({
           title: data.message || '发生错误',
           icon: 'none'
+        });
+      });
+
+      // 监听断开连接
+      socket.on('disconnect', () => {
+        this.handleDisconnect();
+      });
+
+      // 监听游戏快照（用于重连）
+      socket.on('game:snapshot', (data) => {
+        this.handleGameSnapshot(data.snapshot);
+      });
+
+      // 监听玩家断开
+      socket.on('player:disconnected', (data) => {
+        wx.showToast({
+          title: `${data.nickname} 断开连接`,
+          icon: 'none',
+          duration: 2000
         });
       });
 
@@ -393,5 +415,128 @@ Page({
     const { index, player } = e.detail;
     // 可以显示玩家详情或执行其他操作
     console.log('点击玩家:', player);
+  },
+
+  // 处理断开连接
+  handleDisconnect() {
+    if (this.data.isReconnecting) return;
+    
+    this.setData({ isReconnecting: true });
+    wx.showToast({
+      title: '连接断开，正在重连...',
+      icon: 'loading',
+      duration: 2000
+    });
+
+    this.attemptReconnect();
+  },
+
+  // 尝试重连
+  async attemptReconnect() {
+    if (this.data.reconnectAttempts >= this.data.maxReconnectAttempts) {
+      this.setData({ isReconnecting: false });
+      wx.showModal({
+        title: '连接失败',
+        content: '无法连接到服务器，请检查网络后重试',
+        showCancel: true,
+        confirmText: '重试',
+        cancelText: '返回',
+        success: (res) => {
+          if (res.confirm) {
+            this.setData({ reconnectAttempts: 0 });
+            this.attemptReconnect();
+          } else {
+            wx.navigateBack();
+          }
+        }
+      });
+      return;
+    }
+
+    this.setData({ 
+      reconnectAttempts: this.data.reconnectAttempts + 1 
+    });
+
+    try {
+      // 等待1秒后重连
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const userInfo = this.data.userInfo;
+      await socket.connect(userInfo.userId, userInfo.nickname);
+      
+      // 重新加入房间
+      socket.joinRoom(this.data.roomId, userInfo.nickname, userInfo.avatar);
+      
+      // 请求游戏状态快照
+      socket.requestGameSnapshot(this.data.roomId, userInfo.userId);
+      
+      this.setData({ 
+        isReconnecting: false,
+        reconnectAttempts: 0 
+      });
+      
+      wx.showToast({
+        title: '重连成功',
+        icon: 'success',
+        duration: 1500
+      });
+    } catch (error) {
+      console.error('重连失败:', error);
+      // 继续尝试重连
+      this.attemptReconnect();
+    }
+  },
+
+  // 处理游戏快照（重连后恢复状态）
+  handleGameSnapshot(snapshot) {
+    if (!snapshot) return;
+
+    wx.showToast({
+      title: '已恢复游戏状态',
+      icon: 'success',
+      duration: 1500
+    });
+
+    // 根据快照恢复游戏状态
+    const userInfo = this.data.userInfo;
+    let myPlayerIndex = -1;
+    
+    snapshot.players.forEach((p, idx) => {
+      if (p.userId === userInfo.userId) {
+        myPlayerIndex = idx;
+      }
+    });
+
+    // 更新游戏状态
+    this.setData({
+      gameState: {
+        handNumber: snapshot.handNumber,
+        currentPhase: snapshot.currentPhase,
+        currentPlayerIndex: snapshot.currentPlayerIndex,
+        pot: snapshot.pot,
+        currentBet: snapshot.currentBet,
+        gamePhase: snapshot.currentPhase,
+        communityCards: snapshot.communityCards || [],
+        players: snapshot.players.map((p, idx) => ({
+          id: idx,
+          name: p.nickname,
+          isHuman: p.userId === userInfo.userId,
+          chips: p.chips,
+          currentBet: 0, // 需要从roundActions计算
+          folded: false, // 需要从roundActions判断
+          allIn: p.chips === 0,
+          cards: []
+        }))
+      },
+      myPlayerIndex,
+      isMyTurn: snapshot.currentPlayerIndex === myPlayerIndex && 
+                snapshot.currentPhase !== 'waiting' && 
+                snapshot.currentPhase !== 'ended'
+    });
+
+    // 如果是我的回合，启动倒计时
+    if (this.data.isMyTurn) {
+      this.startActionTimer();
+    }
   }
 });
