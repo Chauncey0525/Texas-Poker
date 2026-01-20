@@ -10,6 +10,14 @@
 .history-item {
   margin-bottom: 20rpx;
   position: relative;
+  transition: all 0.3s;
+  border-left: 4rpx solid transparent;
+}
+
+.history-item:active {
+  transform: translateX(5rpx);
+  border-left-color: #0f3460;
+  box-shadow: 0 4rpx 15rpx rgba(15, 52, 96, 0.3);
 }
 
 .item-header {
@@ -30,10 +38,17 @@
 
 .item-content {
   display: flex;
-  flex-direction: column;
-  gap: 10rpx;
+  flex-wrap: wrap;
+  gap: 15rpx;
   margin: 20rpx 0;
-  font-size: 28rpx;
+  font-size: 26rpx;
+}
+
+.item-content text {
+  padding: 8rpx 15rpx;
+  background-color: rgba(15, 52, 96, 0.2);
+  border-radius: 8rpx;
+  color: #a0a0a0;
 }
 
 .item-actions {

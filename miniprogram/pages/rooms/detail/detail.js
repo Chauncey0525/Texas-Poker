@@ -13,7 +13,11 @@ Page({
     allReady: false,
     currentPlayerReady: false,
     chatMessages: [],
-    chatInput: ''
+    chatInput: '',
+    showInviteDialog: false,
+    inviteCode: '',
+    showSettingsEdit: false,
+    editSettings: {}
   },
 
   onLoad(options) {
@@ -31,6 +35,7 @@ Page({
     this.loadUserInfo();
     this.loadRoomDetail();
     this.initSocket();
+    this.generateInviteCode();
   },
 
   onUnload() {
@@ -189,6 +194,161 @@ Page({
         icon: 'none'
       });
     }
+  },
+
+  // 生成邀请码
+  generateInviteCode() {
+    const roomId = this.data.roomId;
+    // 使用房间ID的前8位作为邀请码
+    const inviteCode = roomId.substring(0, 8).toUpperCase();
+    this.setData({ inviteCode });
+  },
+
+  // 显示邀请对话框
+  onShowInvite() {
+    this.setData({ showInviteDialog: true });
+  },
+
+  // 关闭邀请对话框
+  onCloseInvite() {
+    this.setData({ showInviteDialog: false });
+  },
+
+  // 复制邀请码
+  onCopyInviteCode() {
+    const inviteCode = this.data.inviteCode;
+    wx.setClipboardData({
+      data: inviteCode,
+      success: () => {
+        wx.showToast({
+          title: '邀请码已复制',
+          icon: 'success'
+        });
+      }
+    });
+  },
+
+  // 分享房间
+  onShareRoom() {
+    const { room, inviteCode } = this.data;
+    return {
+      title: `邀请你加入房间：${room.roomName}`,
+      path: `/pages/rooms/detail/detail?roomId=${this.data.roomId}&inviteCode=${inviteCode}`,
+      imageUrl: '' // 可以添加房间分享图片
+    };
+  },
+
+  // 显示设置编辑
+  onShowSettingsEdit() {
+    if (!this.data.isOwner) {
+      wx.showToast({
+        title: '只有房主可以修改设置',
+        icon: 'none'
+      });
+      return;
+    }
+
+    if (this.data.room.status === 'playing') {
+      wx.showToast({
+        title: '游戏进行中无法修改设置',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({
+      showSettingsEdit: true,
+      editSettings: {
+        roomName: this.data.room.roomName,
+        password: '',
+        maxPlayers: this.data.room.settings.maxPlayers,
+        initialChips: this.data.room.settings.initialChips,
+        smallBlind: this.data.room.settings.smallBlind,
+        bigBlind: this.data.room.settings.bigBlind
+      }
+    });
+  },
+
+  // 关闭设置编辑
+  onCloseSettingsEdit() {
+    this.setData({ showSettingsEdit: false });
+  },
+
+  // 输入设置
+  onSettingsInput(e) {
+    const field = e.currentTarget.dataset.field;
+    const value = e.detail.value;
+    const settings = { ...this.data.editSettings };
+    
+    if (field === 'maxPlayers' || field === 'initialChips' || field === 'smallBlind' || field === 'bigBlind') {
+      settings[field] = parseInt(value) || 0;
+    } else {
+      settings[field] = value;
+    }
+
+    this.setData({ editSettings: settings });
+  },
+
+  // 保存设置
+  async onSaveSettings() {
+    const { editSettings, roomId, userInfo } = this.data;
+    
+    // 验证设置
+    if (!editSettings.roomName || editSettings.roomName.trim() === '') {
+      wx.showToast({
+        title: '房间名称不能为空',
+        icon: 'none'
+      });
+      return;
+    }
+
+    if (editSettings.maxPlayers < 2 || editSettings.maxPlayers > 9) {
+      wx.showToast({
+        title: '人数限制应在2-9人之间',
+        icon: 'none'
+      });
+      return;
+    }
+
+    if (editSettings.bigBlind < editSettings.smallBlind) {
+      wx.showToast({
+        title: '大盲注不能小于小盲注',
+        icon: 'none'
+      });
+      return;
+    }
+
+    wx.showLoading({ title: '保存中...' });
+    
+    try {
+      await roomApi.updateRoomSettings(roomId, userInfo.userId, editSettings);
+      
+      wx.hideLoading();
+      wx.showToast({
+        title: '设置已更新',
+        icon: 'success'
+      });
+      
+      this.setData({ showSettingsEdit: false });
+      this.loadRoomDetail();
+      
+      // 通知房间内其他玩家
+      socket.send('room:settings:updated', {
+        roomId,
+        settings: editSettings
+      });
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: error.message || '保存失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   },
 
   // 开始游戏

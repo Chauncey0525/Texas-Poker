@@ -1,0 +1,212 @@
+/* components/player-list/player-list.wxss */
+
+/* 圆形布局 */
+.players-circle {
+  position: relative;
+  width: 600rpx;
+  height: 600rpx;
+  margin: 40rpx auto;
+  border: 2rpx dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.player-seat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  width: 120rpx;
+  text-align: center;
+}
+
+.my-seat {
+  border: 2rpx solid #0f3460;
+  border-radius: 10rpx;
+  padding: 10rpx;
+  background-color: rgba(15, 52, 96, 0.3);
+}
+
+.active-turn {
+  border: 2rpx solid #4caf50;
+  box-shadow: 0 0 20rpx rgba(76, 175, 80, 0.5);
+}
+
+.player-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 0 auto 10rpx;
+  color: #fff;
+}
+
+.player-info {
+  font-size: 20rpx;
+}
+
+.player-name {
+  display: block;
+  font-size: 22rpx;
+  margin-bottom: 5rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.player-chips {
+  display: block;
+  font-size: 20rpx;
+  color: #4caf50;
+  margin-bottom: 5rpx;
+}
+
+.player-bet {
+  display: block;
+  font-size: 18rpx;
+  color: #ff9800;
+}
+
+.player-status {
+  margin-top: 5rpx;
+}
+
+.status-folded,
+.status-allin,
+.status-turn {
+  display: block;
+  font-size: 18rpx;
+  padding: 2rpx 6rpx;
+  border-radius: 4rpx;
+  margin-top: 5rpx;
+}
+
+.status-folded {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.status-allin {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+.status-turn {
+  background-color: #4caf50;
+  color: #fff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.player-cards {
+  display: flex;
+  gap: 5rpx;
+  margin-top: 10rpx;
+  justify-content: center;
+}
+
+.card-item {
+  width: 40rpx;
+  height: 55rpx;
+  background-color: #fff;
+  border-radius: 4rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-weight: bold;
+  font-size: 18rpx;
+}
+
+.card-suit {
+  font-size: 14rpx;
+  color: #d32f2f;
+}
+
+.card-rank {
+  font-size: 16rpx;
+}
+
+/* 列表布局 */
+.players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+  border-radius: 15rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.player-item.me {
+  border-color: #0f3460;
+  background: linear-gradient(135deg, rgba(15, 52, 96, 0.3) 0%, rgba(26, 26, 46, 0.3) 100%);
+}
+
+.player-item.active {
+  border-color: #4caf50;
+  box-shadow: 0 0 20rpx rgba(76, 175, 80, 0.5);
+}
+
+.player-item .player-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  margin-right: 20rpx;
+}
+
+.player-item .player-info {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.player-item .player-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+
+.me-badge {
+  display: inline-block;
+  background-color: #0f3460;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  margin-left: 10rpx;
+}
+
+.player-details {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 8rpx;
+  font-size: 24rpx;
+}
+
+.player-item .player-chips {
+  color: #4caf50;
+}
+
+.player-item .player-bet {
+  color: #ff9800;
+}
+
+.player-item .player-cards {
+  margin-left: 20rpx;
+}

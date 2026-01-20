@@ -1,0 +1,135 @@
+<!--pages/rooms/game/game.wxml-->
+<view class="container">
+  <block wx:if="{{gameState && gameState.gamePhase !== 'waiting'}}">
+    <!-- 游戏信息栏 -->
+    <view class="game-header">
+      <view class="room-info">
+        <text class="room-name">{{room.roomName}}</text>
+        <text class="hand-number">第 {{gameState.handNumber || 1}} 局</text>
+      </view>
+      <view class="game-stats">
+        <text>底池: {{gameState.pot}}</text>
+        <text>当前下注: {{gameState.currentBet}}</text>
+      </view>
+      <view class="game-phase">
+        <text>{{gameState.gamePhase === 'preflop' ? '翻牌前' : gameState.gamePhase === 'flop' ? '翻牌' : gameState.gamePhase === 'turn' ? '转牌' : gameState.gamePhase === 'river' ? '河牌' : '等待中'}}</text>
+      </view>
+    </view>
+
+    <!-- 玩家列表组件 -->
+    <player-list
+      players="{{gameState.players}}"
+      currentPlayerIndex="{{gameState.currentPlayerIndex}}"
+      myPlayerIndex="{{myPlayerIndex}}"
+      gamePhase="{{gameState.gamePhase}}"
+      layout="circle"
+      bind:playertap="onPlayerTap"
+    />
+
+    <!-- 公共牌 -->
+    <view class="community-cards-section">
+      <view class="section-title">公共牌</view>
+      <view class="community-cards">
+        <view class="card-item" wx:for="{{gameState.communityCards}}" wx:key="index">
+          <text class="card-suit">{{item.suit}}</text>
+          <text class="card-rank">{{item.rank}}</text>
+        </view>
+        <view wx:if="{{gameState.communityCards.length === 0}}" class="no-cards">等待发牌</view>
+      </view>
+    </view>
+
+    <!-- 操作提示 -->
+    <view class="action-hint" wx:if="{{gameState.currentPlayerIndex >= 0}}">
+      <view class="hint-content">
+        <text class="hint-text">
+          <text wx:if="{{isMyTurn}}" class="hint-highlight">轮到您行动了！</text>
+          <text wx:else>等待 {{gameState.players[gameState.currentPlayerIndex].name}} 行动...</text>
+        </text>
+        <view class="timer-display" wx:if="{{isMyTurn && timeLeft > 0}}">
+          <text class="timer-text">剩余时间: </text>
+          <text class="timer-value {{timeLeft <= 10 ? 'warning' : ''}}">{{timeLeft}}秒</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 观战提示 -->
+    <view wx:if="{{isSpectator && gameState.gamePhase !== 'ended'}}" class="spectator-notice">
+      <view class="spectator-content">
+        <text class="spectator-icon">👁️</text>
+        <text class="spectator-text">观战模式 - 您已出局，可以观看其他玩家游戏</text>
+      </view>
+    </view>
+
+    <!-- 操作区域（仅当前玩家显示） -->
+    <view wx:if="{{isMyTurn && !isSpectator}}" class="action-panel">
+      <view class="action-buttons">
+        <button 
+          class="btn btn-check" 
+          bindtap="onCheck" 
+          wx:if="{{gameState.currentBet === 0}}"
+        >
+          过牌
+        </button>
+        <button 
+          class="btn btn-call" 
+          bindtap="onCall" 
+          wx:if="{{gameState.currentBet > 0}}"
+        >
+          跟注 {{gameState.currentBet - (gameState.players[myPlayerIndex].currentBet || 0)}}
+        </button>
+        <button class="btn btn-bet" bindtap="showBetInput">下注</button>
+        <button class="btn btn-raise" bindtap="showRaiseInput">加注</button>
+        <button class="btn btn-fold" bindtap="onFold">弃牌</button>
+        <button class="btn btn-allin" bindtap="onAllIn">全押</button>
+      </view>
+    </view>
+
+    <!-- 下注输入组件 -->
+    <bet-input
+      wx:if="{{showBetInput}}"
+      currentBet="{{gameState.currentBet}}"
+      playerChips="{{gameState.players[myPlayerIndex].chips}}"
+      minBet="{{minBetAmount}}"
+      bind:confirm="onBet"
+    />
+    
+    <!-- 加注输入组件 -->
+    <bet-input
+      wx:if="{{showRaiseInput}}"
+      currentBet="{{gameState.currentBet}}"
+      playerChips="{{gameState.players[myPlayerIndex].chips}}"
+      minBet="{{minRaiseAmount}}"
+      bind:confirm="onRaise"
+    />
+
+    <!-- 聊天区域 -->
+    <view class="chat-panel">
+      <scroll-view class="chat-messages" scroll-y scroll-top="{{chatScrollTop}}">
+        <view class="chat-message" wx:for="{{chatMessages}}" wx:key="index">
+          <text class="chat-nickname">{{item.nickname}}:</text>
+          <text class="chat-content">{{item.message}}</text>
+        </view>
+      </scroll-view>
+      <view class="chat-input-area">
+        <input 
+          class="chat-input"
+          type="text"
+          placeholder="输入消息..."
+          value="{{chatInput}}"
+          bindinput="onChatInput"
+        />
+        <button class="chat-send-btn" bindtap="onSendChat">发送</button>
+      </view>
+    </view>
+
+    <!-- 离开按钮 -->
+    <view class="leave-btn-container">
+      <button class="btn-leave" bindtap="onLeaveGame">离开游戏</button>
+    </view>
+  </block>
+
+  <!-- 等待游戏开始 -->
+  <view wx:else class="waiting-screen">
+    <text class="waiting-text">等待游戏开始...</text>
+  </view>
+</view>

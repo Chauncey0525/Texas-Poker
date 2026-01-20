@@ -211,6 +211,68 @@ class RoomService {
   }
 
   /**
+   * 更新房间设置（仅房主）
+   */
+  async updateRoomSettings(roomId, userId, settings) {
+    const room = await this.getRoomById(roomId);
+    if (!room) {
+      throw new Error('房间不存在');
+    }
+
+    if (room.ownerId !== userId) {
+      throw new Error('只有房主可以修改房间设置');
+    }
+
+    if (room.status === 'playing') {
+      throw new Error('游戏进行中无法修改设置');
+    }
+
+    // 更新房间名称
+    if (settings.roomName !== undefined) {
+      room.roomName = settings.roomName;
+    }
+
+    // 更新密码
+    if (settings.password !== undefined) {
+      room.password = settings.password || '';
+    }
+
+    // 更新游戏设置
+    if (settings.maxPlayers !== undefined) {
+      if (settings.maxPlayers < room.players.length) {
+        throw new Error('最大人数不能小于当前玩家数');
+      }
+      room.settings.maxPlayers = settings.maxPlayers;
+    }
+
+    if (settings.initialChips !== undefined) {
+      room.settings.initialChips = settings.initialChips;
+      // 更新所有玩家的筹码
+      room.players.forEach(p => {
+        p.chips = settings.initialChips;
+      });
+    }
+
+    if (settings.smallBlind !== undefined) {
+      room.settings.smallBlind = settings.smallBlind;
+    }
+
+    if (settings.bigBlind !== undefined) {
+      if (settings.bigBlind < room.settings.smallBlind) {
+        throw new Error('大盲注不能小于小盲注');
+      }
+      room.settings.bigBlind = settings.bigBlind;
+    }
+
+    if (settings.minRaiseMultiplier !== undefined) {
+      room.settings.minRaiseMultiplier = settings.minRaiseMultiplier;
+    }
+
+    await room.save();
+    return room;
+  }
+
+  /**
    * 删除房间
    */
   async deleteRoom(roomId) {

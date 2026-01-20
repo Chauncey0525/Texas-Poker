@@ -190,4 +190,32 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
+/**
+ * 更新房间设置（仅房主）
+ * PUT /api/rooms/:roomId/settings
+ */
+router.put('/:roomId/settings', async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { userId, settings } = req.body;
+    
+    if (!userId || !settings) {
+      return res.status(400).json({ error: '缺少必要参数' });
+    }
+
+    const room = await roomService.updateRoomSettings(roomId, userId, settings);
+    
+    const roomData = room.toObject();
+    delete roomData.password;
+
+    res.json({
+      success: true,
+      room: roomData
+    });
+  } catch (error) {
+    console.error('更新房间设置失败:', error);
+    res.status(400).json({ error: error.message || '更新房间设置失败' });
+  }
+});
+
 module.exports = router;

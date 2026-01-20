@@ -94,15 +94,73 @@ page {
   padding: 40rpx;
 }
 
-/* 空状态 */
+/* 骨架屏动画 */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Toast 样式优化 */
+.toast-custom {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 10rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+/* 空状态优化 */
 .empty-state {
   text-align: center;
   padding: 100rpx 40rpx;
   color: #7A7E83;
 }
 
-.empty-state image {
-  width: 200rpx;
-  height: 200rpx;
-  margin-bottom: 40rpx;
+.empty-state-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-state-text {
+  font-size: 28rpx;
+  color: #a0a0a0;
+  margin-bottom: 20rpx;
+}
+
+.empty-state-desc {
+  font-size: 24rpx;
+  color: #7A7E83;
+}
+
+/* 操作反馈动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
 }

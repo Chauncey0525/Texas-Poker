@@ -12,7 +12,8 @@
     "pages/profile/profile",
     "pages/rooms/rooms",
     "pages/rooms/create/create",
-    "pages/rooms/detail/detail"
+    "pages/rooms/detail/detail",
+    "pages/rooms/game/game"
   ],
   "window": {
     "backgroundTextStyle": "light",

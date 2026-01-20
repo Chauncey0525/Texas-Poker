@@ -1,0 +1,19 @@
+<!--components/confirm-dialog/confirm-dialog.wxml-->
+<view class="dialog-container {{show ? 'show' : ''}}" wx:if="{{show}}" catchtap="onMaskTap">
+  <view class="dialog" catchtap="stopPropagation">
+    <view class="dialog-header">
+      <text class="dialog-title">{{title}}</text>
+    </view>
+    <view class="dialog-body">
+      <text class="dialog-content">{{content}}</text>
+    </view>
+    <view class="dialog-footer">
+      <button class="dialog-btn cancel-btn" style="color: {{cancelColor}}" bindtap="onCancel">
+        {{cancelText}}
+      </button>
+      <button class="dialog-btn confirm-btn" style="background-color: {{confirmColor}}" bindtap="onConfirm">
+        {{confirmText}}
+      </button>
+    </view>
+  </view>
+</view>
