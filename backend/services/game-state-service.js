@@ -2,6 +2,37 @@
 const Room = require('../models/room');
 const MultiplayerGameRecord = require('../models/multiplayer-game-record');
 
+// 卡牌工具函数
+const suits = ['♠', '♥', '♦', '♣'];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+function getCardValue(rank) {
+  if (rank === 'A') return 14;
+  if (rank === 'K') return 13;
+  if (rank === 'Q') return 12;
+  if (rank === 'J') return 11;
+  return parseInt(rank);
+}
+
+function createDeck() {
+  const deck = [];
+  for (let suit of suits) {
+    for (let rank of ranks) {
+      deck.push({ suit, rank, value: getCardValue(rank) });
+    }
+  }
+  return shuffleDeck(deck);
+}
+
+function shuffleDeck(deck) {
+  const shuffled = [...deck];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 class GameStateService {
   /**
    * 初始化游戏
@@ -23,6 +54,17 @@ class GameStateService {
     const bigBlindIndex = (dealerIndex + 2) % playerCount;
     const firstPlayerIndex = (dealerIndex + 3) % playerCount;
 
+    // 创建并洗牌
+    const deck = createDeck();
+    
+    // 发手牌给每个玩家（每人2张）
+    room.players.forEach((player, index) => {
+      player.cards = [
+        deck.pop(),
+        deck.pop()
+      ];
+    });
+
     room.status = 'playing';
     room.gameState = {
       currentPhase: 'preflop',
@@ -34,7 +76,8 @@ class GameStateService {
       communityCards: [],
       currentBet: room.settings.bigBlind,
       roundActions: [],
-      handNumber: 1
+      handNumber: 1,
+      deck: deck // 保存剩余的牌堆
     };
 
     // 扣除盲注
@@ -351,13 +394,23 @@ class GameStateService {
     room.gameState.currentPhase = phases[currentPhaseIndex + 1];
 
     // 如果是翻牌后阶段，发公共牌
+    const deck = room.gameState.deck || [];
     if (room.gameState.currentPhase === 'flop') {
-      // 这里应该调用发牌逻辑，暂时留空
-      // room.gameState.communityCards = dealCommunityCards(3);
+      // 发3张翻牌
+      room.gameState.communityCards = [
+        deck.pop(),
+        deck.pop(),
+        deck.pop()
+      ];
+      room.gameState.deck = deck;
     } else if (room.gameState.currentPhase === 'turn') {
-      // room.gameState.communityCards.push(...dealCommunityCards(1));
+      // 发1张转牌
+      room.gameState.communityCards.push(deck.pop());
+      room.gameState.deck = deck;
     } else if (room.gameState.currentPhase === 'river') {
-      // room.gameState.communityCards.push(...dealCommunityCards(1));
+      // 发1张河牌
+      room.gameState.communityCards.push(deck.pop());
+      room.gameState.deck = deck;
     }
 
     // 设置下一个行动的玩家（小盲注位置的下一个）
@@ -436,7 +489,8 @@ class GameStateService {
         position: idx,
         chips: p.chips,
         isReady: p.isReady,
-        hasCards: room.gameState.currentPhase !== 'waiting' && idx !== room.gameState.currentPlayerIndex
+        cards: p.cards || [], // 包含手牌信息
+        hasCards: room.gameState.currentPhase !== 'waiting'
       })),
       roundActions: room.gameState.roundActions || [],
       timestamp: new Date()

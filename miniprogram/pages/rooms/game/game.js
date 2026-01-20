@@ -184,7 +184,7 @@ Page({
           currentBet: this.getPlayerCurrentBet(gameState, idx),
           folded: this.isPlayerFolded(gameState, idx),
           allIn: p.chips === 0 && gameState.currentPhase !== 'waiting',
-          cards: this.getPlayerCards(gameState, idx, myPlayerIndex)
+          cards: this.getPlayerCards(gameState, idx, myPlayerIndex, room)
         })),
         pot: gameState.pot || 0,
         currentBet: currentBet,
@@ -227,12 +227,18 @@ Page({
   },
 
   // 获取玩家手牌（只有自己的牌或游戏结束时显示）
-  getPlayerCards(gameState, playerIndex, myPlayerIndex) {
-    // 暂时返回空数组，实际应该从游戏状态中获取
+  getPlayerCards(gameState, playerIndex, myPlayerIndex, room) {
+    // 从房间数据中获取玩家手牌
+    if (!room || !room.players || !room.players[playerIndex]) {
+      return [];
+    }
+    
+    const player = room.players[playerIndex];
+    const cards = player.cards || [];
+    
     // 只有自己的牌或游戏结束时才显示
     if (playerIndex === myPlayerIndex || gameState.currentPhase === 'ended') {
-      // 这里需要从服务器获取手牌信息
-      return [];
+      return cards;
     }
     return [];
   },
@@ -517,16 +523,29 @@ Page({
         currentBet: snapshot.currentBet,
         gamePhase: snapshot.currentPhase,
         communityCards: snapshot.communityCards || [],
-        players: snapshot.players.map((p, idx) => ({
-          id: idx,
-          name: p.nickname,
-          isHuman: p.userId === userInfo.userId,
-          chips: p.chips,
-          currentBet: 0, // 需要从roundActions计算
-          folded: false, // 需要从roundActions判断
-          allIn: p.chips === 0,
-          cards: []
-        }))
+        players: snapshot.players.map((p, idx) => {
+          // 从roundActions计算当前下注和弃牌状态
+          const roundActions = snapshot.roundActions || [];
+          const currentBet = roundActions
+            .filter(a => a.playerIndex === idx)
+            .reduce((sum, a) => sum + (a.amount || 0), 0);
+          const folded = roundActions.some(a => 
+            a.playerIndex === idx && a.action === 'fold'
+          );
+          
+          return {
+            id: idx,
+            name: p.nickname,
+            isHuman: p.userId === userInfo.userId,
+            chips: p.chips,
+            currentBet: currentBet,
+            folded: folded,
+            allIn: p.chips === 0,
+            cards: p.userId === userInfo.userId || snapshot.currentPhase === 'ended' 
+              ? (p.cards || []) 
+              : []
+          };
+        })
       },
       myPlayerIndex,
       isMyTurn: snapshot.currentPlayerIndex === myPlayerIndex && 
