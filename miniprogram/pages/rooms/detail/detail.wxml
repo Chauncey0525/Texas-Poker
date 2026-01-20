@@ -5,8 +5,18 @@
     <view class="room-info-card">
       <view class="room-header">
         <view class="room-name">{{room.roomName}}</view>
-        <view class="room-status {{room.status}}">
-          {{room.status === 'waiting' ? '等待中' : '游戏中'}}
+        <view class="room-header-actions">
+          <view class="room-status {{room.status}}">
+            {{room.status === 'waiting' ? '等待中' : '游戏中'}}
+          </view>
+          <button 
+            wx:if="{{isOwner && room.status === 'waiting'}}"
+            class="edit-settings-btn"
+            size="mini"
+            bindtap="onShowSettingsEdit"
+          >
+            编辑设置
+          </button>
         </view>
       </view>
       

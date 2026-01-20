@@ -383,3 +383,137 @@
   padding: 20rpx;
   font-size: 28rpx;
 }
+
+.room-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15rpx;
+}
+
+.edit-settings-btn {
+  background-color: #0f3460;
+  color: #fff;
+  border: none;
+  border-radius: 5rpx;
+  padding: 5rpx 15rpx;
+  font-size: 22rpx;
+}
+
+.settings-edit-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.settings-edit-dialog.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-edit-content {
+  background-color: #1a1a2e;
+  border-radius: 20rpx;
+  width: 85%;
+  max-width: 700rpx;
+  max-height: 80vh;
+  border: 2rpx solid #533483;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-edit-dialog.show .settings-edit-content {
+  transform: scale(1);
+}
+
+.settings-edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid rgba(83, 52, 131, 0.3);
+}
+
+.settings-edit-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.settings-edit-close {
+  font-size: 40rpx;
+  color: #a0a0a0;
+  line-height: 1;
+}
+
+.settings-edit-body {
+  flex: 1;
+  padding: 30rpx 40rpx;
+  overflow-y: auto;
+}
+
+.setting-edit-item {
+  margin-bottom: 30rpx;
+}
+
+.setting-label {
+  display: block;
+  font-size: 28rpx;
+  color: #fff;
+  margin-bottom: 15rpx;
+  font-weight: 500;
+}
+
+.setting-input {
+  width: 100%;
+  padding: 20rpx;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2rpx solid #533483;
+  border-radius: 8rpx;
+  color: #fff;
+  font-size: 28rpx;
+}
+
+.setting-input:focus {
+  border-color: #0f3460;
+}
+
+.settings-edit-footer {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 40rpx 30rpx;
+  border-top: 1rpx solid rgba(83, 52, 131, 0.3);
+}
+
+.settings-cancel-btn,
+.settings-save-btn {
+  flex: 1;
+  padding: 20rpx;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.settings-cancel-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.settings-save-btn {
+  background: linear-gradient(135deg, #0f3460 0%, #1a1a2e 100%);
+  color: #fff;
+  font-weight: bold;
+}
