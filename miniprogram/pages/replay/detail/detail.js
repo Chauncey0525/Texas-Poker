@@ -401,5 +401,126 @@ Page({
   formatTime(timestamp) {
     const date = new Date(timestamp);
     return `${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+  },
+
+  // 分享对局
+  onShareAppMessage() {
+    const { gameRecord, isMultiplayer } = this.data;
+    if (!gameRecord) {
+      return {};
+    }
+
+    const title = isMultiplayer 
+      ? `精彩对局：${gameRecord.roomName || '多人对局'}`
+      : '我的德州扑克对局';
+    
+    const description = isMultiplayer
+      ? `底池：${gameRecord.finalResult?.pot || 0}，${gameRecord.players?.length || 0}人参与`
+      : `准确率：${this.data.gtoAnalysis?.accuracy || 0}%`;
+
+    return {
+      title,
+      path: `/pages/replay/detail/detail?${isMultiplayer ? `recordId=${gameRecord._id}` : `gameId=${gameRecord.id}`}`,
+      imageUrl: '' // 可以添加对局截图
+    };
+  },
+
+  // 生成分享图片（截图）
+  async generateShareImage() {
+    wx.showLoading({ title: '生成中...' });
+    
+    try {
+      // 使用canvas生成分享图片
+      const ctx = wx.createCanvasContext('shareCanvas');
+      const { gameRecord, isMultiplayer } = this.data;
+      
+      // 绘制背景
+      ctx.setFillStyle('#1a1a2e');
+      ctx.fillRect(0, 0, 750, 1334);
+      
+      // 绘制标题
+      ctx.setFillStyle('#ffffff');
+      ctx.setFontSize(40);
+      ctx.fillText(isMultiplayer ? '精彩对局' : '我的对局', 375, 100);
+      
+      // 绘制对局信息
+      ctx.setFontSize(28);
+      if (isMultiplayer) {
+        ctx.fillText(`房间：${gameRecord.roomName || '多人对局'}`, 375, 200);
+        ctx.fillText(`底池：${gameRecord.finalResult?.pot || 0}`, 375, 250);
+        ctx.fillText(`玩家数：${gameRecord.players?.length || 0}`, 375, 300);
+      } else {
+        ctx.fillText(`准确率：${this.data.gtoAnalysis?.accuracy || 0}%`, 375, 200);
+        ctx.fillText(`总决策：${this.data.gtoAnalysis?.totalDecisions || 0}`, 375, 250);
+      }
+      
+      // 绘制时间
+      ctx.setFontSize(24);
+      ctx.setFillStyle('#a0a0a0');
+      ctx.fillText(this.formatTime(gameRecord.timestamp), 375, 350);
+      
+      ctx.draw(false, () => {
+        wx.canvasToTempFilePath({
+          canvasId: 'shareCanvas',
+          success: (res) => {
+            wx.hideLoading();
+            // 保存图片到相册
+            wx.saveImageToPhotosAlbum({
+              filePath: res.tempFilePath,
+              success: () => {
+                wx.showToast({
+                  title: '图片已保存',
+                  icon: 'success'
+                });
+              },
+              fail: () => {
+                wx.showToast({
+                  title: '保存失败',
+                  icon: 'none'
+                });
+              }
+            });
+          },
+          fail: () => {
+            wx.hideLoading();
+            wx.showToast({
+              title: '生成失败',
+              icon: 'none'
+            });
+          }
+        });
+      });
+    } catch (error) {
+      wx.hideLoading();
+      wx.showToast({
+        title: '生成失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 复制分享链接
+  onCopyShareLink() {
+    const { gameRecord, isMultiplayer } = this.data;
+    if (!gameRecord) {
+      wx.showToast({
+        title: '对局信息不存在',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 生成分享链接（实际应用中应该使用短链接服务）
+    const shareLink = `https://your-domain.com/replay?${isMultiplayer ? `recordId=${gameRecord._id}` : `gameId=${gameRecord.id}`}`;
+    
+    wx.setClipboardData({
+      data: shareLink,
+      success: () => {
+        wx.showToast({
+          title: '链接已复制',
+          icon: 'success'
+        });
+      }
+    });
   }
 });

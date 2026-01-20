@@ -102,6 +102,31 @@
     <button class="btn btn-secondary" bindtap="showAnalysis">查看详细分析</button>
   </view>
 
+  <!-- 分享功能 -->
+  <view class="card share-section">
+    <view class="title">分享对局</view>
+    <view class="share-buttons">
+      <button class="btn btn-share" open-type="share">
+        <text class="share-icon">📤</text>
+        <text>分享到微信</text>
+      </button>
+      <button class="btn btn-share" bindtap="onCopyShareLink">
+        <text class="share-icon">🔗</text>
+        <text>复制链接</text>
+      </button>
+      <button class="btn btn-share" bindtap="generateShareImage">
+        <text class="share-icon">🖼️</text>
+        <text>生成图片</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 隐藏的canvas用于生成分享图片 -->
+  <canvas 
+    canvas-id="shareCanvas" 
+    style="position: fixed; top: -9999px; width: 750rpx; height: 1334rpx;"
+  ></canvas>
+
   <!-- 详细分析弹窗 -->
   <view wx:if="{{showAnalysis && gtoAnalysis}}" class="analysis-modal" bindtap="hideAnalysis">
     <view class="analysis-content" catchtap="stopPropagation">
