@@ -486,11 +486,8 @@ Page({
       const userInfo = this.data.userInfo;
       await socket.connect(userInfo.userId, userInfo.nickname);
       
-      // 重新加入房间
-      socket.joinRoom(this.data.roomId, userInfo.nickname, userInfo.avatar);
-      
-      // 请求游戏状态快照
-      socket.requestGameSnapshot(this.data.roomId, userInfo.userId);
+      // 使用重连API
+      socket.reconnect(this.data.roomId, userInfo.userId);
       
       this.setData({ 
         isReconnecting: false,

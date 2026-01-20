@@ -180,6 +180,99 @@ class SocketHandlers {
         });
       });
 
+      // 用户重连请求
+      socket.on('user:reconnect', async (data) => {
+        try {
+          const { userId, roomId } = data;
+          
+          if (!userId || !roomId) {
+            socket.emit('error', { message: '缺少必要参数' });
+            return;
+          }
+
+          // 验证用户是否在房间中
+          const room = await roomService.getRoomById(roomId);
+          if (!room) {
+            socket.emit('error', { message: '房间不存在' });
+            return;
+          }
+
+          const player = room.getPlayer(userId);
+          if (!player) {
+            socket.emit('error', { message: '您不在该房间中' });
+            return;
+          }
+
+          // 更新socket映射
+          userSockets.set(userId, socket.id);
+          socketUsers.set(socket.id, userId);
+          socket.userId = userId;
+          userRooms.set(userId, roomId);
+          socket.join(roomId);
+
+          // 标记玩家为已连接
+          player.isConnected = true;
+          await room.save();
+
+          // 获取游戏状态快照
+          let snapshot = null;
+          if (room.status === 'playing' && room.gameState) {
+            snapshot = gameStateService.createGameSnapshot(room);
+          }
+
+          // 发送重连成功消息和游戏状态
+          const roomData = room.toObject();
+          delete roomData.password;
+          
+          socket.emit('user:reconnected', {
+            room: roomData,
+            snapshot
+          });
+
+          // 通知房间内其他玩家
+          io.to(roomId).emit('room:updated', { room: roomData });
+          
+          console.log(`用户 ${userId} 重连成功，房间 ${roomId}`);
+        } catch (error) {
+          console.error('处理重连失败:', error);
+          socket.emit('error', { message: error.message || '重连失败' });
+        }
+      });
+
+      // 请求游戏状态快照
+      socket.on('game:snapshot:request', async (data) => {
+        try {
+          const { roomId, userId } = data;
+          
+          if (!roomId || !userId) {
+            socket.emit('error', { message: '缺少必要参数' });
+            return;
+          }
+
+          const room = await roomService.getRoomById(roomId);
+          if (!room) {
+            socket.emit('error', { message: '房间不存在' });
+            return;
+          }
+
+          const player = room.getPlayer(userId);
+          if (!player) {
+            socket.emit('error', { message: '您不在该房间中' });
+            return;
+          }
+
+          if (room.status === 'playing' && room.gameState) {
+            const snapshot = gameStateService.createGameSnapshot(room);
+            socket.emit('game:snapshot', { snapshot });
+          } else {
+            socket.emit('game:snapshot', { snapshot: null });
+          }
+        } catch (error) {
+          console.error('获取游戏快照失败:', error);
+          socket.emit('error', { message: error.message || '获取快照失败' });
+        }
+      });
+
       // 心跳检测
       socket.on('ping', () => {
         socket.emit('pong');
@@ -193,8 +286,22 @@ class SocketHandlers {
           
           if (roomId) {
             try {
-              const room = await roomService.leaveRoom(roomId, userId);
-              if (room) {
+              const room = await roomService.getRoomById(roomId);
+              if (room && room.status === 'playing') {
+                // 游戏中断开，只标记为断开，不离开房间
+                const player = room.getPlayer(userId);
+                if (player) {
+                  player.isConnected = false;
+                  await room.save();
+                  
+                  // 通知房间内其他玩家
+                  const roomData = room.toObject();
+                  delete roomData.password;
+                  io.to(roomId).emit('room:updated', { room: roomData });
+                }
+              } else {
+                // 非游戏中，离开房间
+                await roomService.leaveRoom(roomId, userId);
                 const roomData = room.toObject();
                 delete roomData.password;
                 io.to(roomId).emit('room:updated', { room: roomData });
