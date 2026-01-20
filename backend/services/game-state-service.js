@@ -62,6 +62,117 @@ class GameStateService {
   }
 
   /**
+   * 验证玩家动作合法性
+   */
+  validatePlayerAction(room, playerIndex, action, amount) {
+    const player = room.players[playerIndex];
+    const gameState = room.gameState;
+
+    // 1. 验证房间状态
+    if (room.status !== 'playing') {
+      throw new Error('房间不在游戏中');
+    }
+
+    // 2. 验证游戏阶段
+    if (gameState.currentPhase === 'waiting' || gameState.currentPhase === 'ended') {
+      throw new Error('游戏未开始或已结束');
+    }
+
+    // 3. 验证是否是当前玩家
+    if (gameState.currentPlayerIndex !== playerIndex) {
+      throw new Error('不是您的回合');
+    }
+
+    // 4. 验证玩家状态
+    if (player.chips === 0 && action !== 'fold') {
+      throw new Error('您已全押，无法进行其他操作');
+    }
+
+    // 检查玩家是否已弃牌
+    const hasFolded = gameState.roundActions.some(a => 
+      a.playerIndex === playerIndex && a.action === 'fold'
+    );
+    if (hasFolded) {
+      throw new Error('您已弃牌，无法进行操作');
+    }
+
+    // 5. 验证动作合法性
+    switch (action) {
+      case 'check':
+        if (gameState.currentBet > 0) {
+          throw new Error('当前有下注，不能过牌');
+        }
+        break;
+
+      case 'call':
+        if (gameState.currentBet === 0) {
+          throw new Error('当前无下注，不能跟注');
+        }
+        if (player.chips < gameState.currentBet) {
+          // 允许全押跟注
+          if (player.chips === 0) {
+            throw new Error('筹码不足');
+          }
+        }
+        break;
+
+      case 'bet':
+        if (gameState.currentBet > 0) {
+          throw new Error('当前已有下注，请使用加注');
+        }
+        if (amount < gameState.bigBlind || amount < room.settings.bigBlind) {
+          throw new Error(`下注金额不能小于大盲注(${room.settings.bigBlind})`);
+        }
+        if (amount > player.chips) {
+          throw new Error('筹码不足');
+        }
+        break;
+
+      case 'raise':
+        if (gameState.currentBet === 0) {
+          throw new Error('当前无下注，请使用下注');
+        }
+        const minRaise = gameState.currentBet * 2;
+        if (amount < minRaise) {
+          throw new Error(`加注金额必须至少为当前下注的2倍(${minRaise})`);
+        }
+        if (amount > player.chips) {
+          throw new Error('筹码不足');
+        }
+        break;
+
+      case 'allin':
+        if (player.chips === 0) {
+          throw new Error('您已全押');
+        }
+        break;
+
+      case 'fold':
+        // 弃牌总是合法的
+        break;
+
+      default:
+        throw new Error(`未知动作: ${action}`);
+    }
+
+    // 6. 验证金额合理性
+    if (amount < 0) {
+      throw new Error('金额不能为负数');
+    }
+
+    // 7. 验证时间戳（防止重放攻击）
+    const lastAction = gameState.roundActions[gameState.roundActions.length - 1];
+    if (lastAction && lastAction.playerIndex === playerIndex) {
+      const timeDiff = Date.now() - new Date(lastAction.timestamp).getTime();
+      if (timeDiff < 100) { // 100ms内重复操作视为异常
+        throw new Error('操作过于频繁，请稍后再试');
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * 处理玩家动作
    */
   async processPlayerAction(roomId, userId, action, amount = 0) {
@@ -75,53 +186,55 @@ class GameStateService {
       throw new Error('玩家不在房间中');
     }
 
-    if (room.gameState.currentPlayerIndex !== playerIndex) {
-      throw new Error('不是您的回合');
-    }
+    // 验证动作合法性
+    this.validatePlayerAction(room, playerIndex, action, amount);
 
     const player = room.players[playerIndex];
     const gameState = room.gameState;
 
-    // 处理不同动作
+    // 处理不同动作（已验证合法性）
+    let actualAmount = 0;
     switch (action) {
       case 'fold':
         player.isReady = false; // 标记为已弃牌
+        actualAmount = 0;
         break;
 
       case 'check':
-        if (gameState.currentBet > 0) {
-          throw new Error('当前有下注，不能过牌');
-        }
+        actualAmount = 0;
         break;
 
       case 'call':
-        const callAmount = Math.min(gameState.currentBet, player.chips);
-        player.chips -= callAmount;
-        gameState.pot += callAmount;
+        actualAmount = Math.min(gameState.currentBet, player.chips);
+        player.chips -= actualAmount;
+        gameState.pot += actualAmount;
         break;
 
       case 'bet':
       case 'raise':
-        if (amount <= gameState.currentBet) {
-          throw new Error('下注金额必须大于当前下注');
-        }
-        if (amount > player.chips) {
-          throw new Error('筹码不足');
-        }
-        const betAmount = Math.min(amount, player.chips);
-        player.chips -= betAmount;
-        gameState.pot += betAmount;
-        gameState.currentBet = betAmount;
+        actualAmount = Math.min(amount, player.chips);
+        player.chips -= actualAmount;
+        gameState.pot += actualAmount;
+        gameState.currentBet = actualAmount;
         break;
 
       case 'allin':
-        const allinAmount = player.chips;
+        actualAmount = player.chips;
         player.chips = 0;
-        gameState.pot += allinAmount;
-        if (allinAmount > gameState.currentBet) {
-          gameState.currentBet = allinAmount;
+        gameState.pot += actualAmount;
+        if (actualAmount > gameState.currentBet) {
+          gameState.currentBet = actualAmount;
         }
         break;
+    }
+
+    // 验证筹码总数一致性（防止作弊）
+    const totalChips = room.players.reduce((sum, p) => sum + p.chips, 0) + gameState.pot;
+    const expectedTotal = room.players.length * room.settings.initialChips;
+    if (Math.abs(totalChips - expectedTotal) > 0.01) { // 允许浮点数误差
+      console.error(`筹码总数不一致! 期望: ${expectedTotal}, 实际: ${totalChips}`);
+      // 可以选择修复或抛出错误
+      // throw new Error('游戏状态异常，已记录');
     }
 
     // 记录动作
