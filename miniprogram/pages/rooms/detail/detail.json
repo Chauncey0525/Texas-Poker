@@ -2,6 +2,6 @@
   "navigationBarTitleText": "房间详情",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "confirm-dialog": "../../components/confirm-dialog/confirm-dialog"
+    "confirm-dialog": "../../../components/confirm-dialog/confirm-dialog"
   }
 }
