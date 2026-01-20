@@ -298,6 +298,87 @@ class GameStateService {
   }
 
   /**
+   * 创建游戏状态快照（用于断线重连）
+   */
+  createGameSnapshot(room) {
+    if (!room.gameState || room.gameState.currentPhase === 'waiting') {
+      return null;
+    }
+
+    return {
+      roomId: room.roomId,
+      handNumber: room.gameState.handNumber,
+      currentPhase: room.gameState.currentPhase,
+      currentPlayerIndex: room.gameState.currentPlayerIndex,
+      dealerIndex: room.gameState.dealerIndex,
+      smallBlindIndex: room.gameState.smallBlindIndex,
+      bigBlindIndex: room.gameState.bigBlindIndex,
+      pot: room.gameState.pot,
+      currentBet: room.gameState.currentBet,
+      communityCards: room.gameState.communityCards || [],
+      players: room.players.map((p, idx) => ({
+        userId: p.userId,
+        nickname: p.nickname,
+        avatar: p.avatar,
+        position: idx,
+        chips: p.chips,
+        isReady: p.isReady,
+        hasCards: room.gameState.currentPhase !== 'waiting' && idx !== room.gameState.currentPlayerIndex
+      })),
+      roundActions: room.gameState.roundActions || [],
+      timestamp: new Date()
+    };
+  }
+
+  /**
+   * 恢复游戏状态（从快照）
+   */
+  async restoreGameFromSnapshot(roomId, snapshot) {
+    const room = await Room.findOne({ roomId });
+    if (!room) {
+      throw new Error('房间不存在');
+    }
+
+    if (room.status !== 'playing') {
+      throw new Error('房间不在游戏中');
+    }
+
+    // 验证快照有效性
+    if (snapshot.roomId !== roomId) {
+      throw new Error('快照房间ID不匹配');
+    }
+
+    // 恢复游戏状态
+    room.gameState = {
+      handNumber: snapshot.handNumber,
+      currentPhase: snapshot.currentPhase,
+      currentPlayerIndex: snapshot.currentPlayerIndex,
+      dealerIndex: snapshot.dealerIndex,
+      smallBlindIndex: snapshot.smallBlindIndex,
+      bigBlindIndex: snapshot.bigBlindIndex,
+      pot: snapshot.pot,
+      currentBet: snapshot.currentBet,
+      communityCards: snapshot.communityCards,
+      roundActions: snapshot.roundActions
+    };
+
+    await room.save();
+    return room;
+  }
+
+  /**
+   * 获取游戏状态快照
+   */
+  async getGameSnapshot(roomId) {
+    const room = await Room.findOne({ roomId });
+    if (!room) {
+      throw new Error('房间不存在');
+    }
+
+    return this.createGameSnapshot(room);
+  }
+
+  /**
    * 保存游戏记录
    */
   async saveGameRecord(room) {

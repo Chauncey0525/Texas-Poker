@@ -28,6 +28,20 @@ class SocketHandlers {
         socket.nickname = nickname || '用户';
 
         console.log(`用户 ${userId} 已连接`);
+        
+        // 如果用户在房间中，发送游戏状态快照
+        const roomId = userRooms.get(userId);
+        if (roomId) {
+          try {
+            const snapshot = await gameStateService.getGameSnapshot(roomId);
+            if (snapshot) {
+              socket.emit('game:snapshot', { snapshot });
+            }
+          } catch (error) {
+            console.error('获取游戏快照失败:', error);
+          }
+        }
+        
         socket.emit('user:connected', { userId, socketId: socket.id });
       });
 

@@ -29,12 +29,14 @@ const gamesRoutes = require('./routes/games');
 const usersRoutes = require('./routes/users');
 const analysisRoutes = require('./routes/analysis');
 const roomsRoutes = require('./routes/rooms');
+const gameRecordRoutes = require('./routes/game-records');
 
 app.use('/api/gto', gtoRoutes);
 app.use('/api/games', gamesRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/analysis', analysisRoutes);
 app.use('/api/rooms', roomsRoutes);
+app.use('/api/game-records', gameRecordRoutes);
 
 // 健康检查
 app.get('/health', (req, res) => {
