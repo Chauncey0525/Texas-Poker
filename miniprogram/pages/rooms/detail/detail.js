@@ -13,7 +13,9 @@ Page({
     allReady: false,
     currentPlayerReady: false,
     chatMessages: [],
-    chatInput: ''
+    chatInput: '',
+    showInviteDialog: false,
+    inviteCode: ''
   },
 
   onLoad(options) {
@@ -31,6 +33,7 @@ Page({
     this.loadUserInfo();
     this.loadRoomDetail();
     this.initSocket();
+    this.generateInviteCode();
   },
 
   onUnload() {
@@ -189,6 +192,53 @@ Page({
         icon: 'none'
       });
     }
+  },
+
+  // 生成邀请码
+  generateInviteCode() {
+    const roomId = this.data.roomId;
+    // 使用房间ID的前8位作为邀请码
+    const inviteCode = roomId.substring(0, 8).toUpperCase();
+    this.setData({ inviteCode });
+  },
+
+  // 显示邀请对话框
+  onShowInvite() {
+    this.setData({ showInviteDialog: true });
+  },
+
+  // 关闭邀请对话框
+  onCloseInvite() {
+    this.setData({ showInviteDialog: false });
+  },
+
+  // 复制邀请码
+  onCopyInviteCode() {
+    const inviteCode = this.data.inviteCode;
+    wx.setClipboardData({
+      data: inviteCode,
+      success: () => {
+        wx.showToast({
+          title: '邀请码已复制',
+          icon: 'success'
+        });
+      }
+    });
+  },
+
+  // 分享房间
+  onShareRoom() {
+    const { room, inviteCode } = this.data;
+    return {
+      title: `邀请你加入房间：${room.roomName}`,
+      path: `/pages/rooms/detail/detail?roomId=${this.data.roomId}&inviteCode=${inviteCode}`,
+      imageUrl: '' // 可以添加房间分享图片
+    };
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，用于阻止事件冒泡
   },
 
   // 开始游戏
