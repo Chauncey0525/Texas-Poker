@@ -5,9 +5,28 @@
     <view class="title">游戏信息</view>
     <view class="game-info">
       <text>时间: {{gameRecord.timestamp}}</text>
-      <text>玩家数: {{gameRecord.gameState.players.length}}</text>
-      <text>最终底池: {{gameRecord.gameState.pot}}</text>
+      <text wx:if="{{isMultiplayer}}">房间: {{gameRecord.roomId}}</text>
+      <text>玩家数: {{isMultiplayer ? gameRecord.players.length : gameRecord.gameState.players.length}}</text>
+      <text>最终底池: {{isMultiplayer ? (currentReplayState ? currentReplayState.pot : gameRecord.finalResult.pot) : gameRecord.gameState.pot}}</text>
       <text wx:if="{{gameRecord.finalResult}}">结果: {{gameRecord.finalResult.message}}</text>
+    </view>
+  </view>
+
+  <!-- 多人对局回放状态 -->
+  <view class="card" wx:if="{{isMultiplayer && currentReplayState}}">
+    <view class="title">当前状态</view>
+    <view class="replay-state">
+      <text>阶段: {{currentReplayState.phase}}</text>
+      <text>底池: {{currentReplayState.pot}}</text>
+      <text>当前下注: {{currentReplayState.currentBet}}</text>
+      <view class="community-cards" wx:if="{{currentReplayState.communityCards.length > 0}}">
+        <text>公共牌:</text>
+        <view class="cards">
+          <view class="card-item" wx:for="{{currentReplayState.communityCards}}" wx:key="index">
+            {{item.rank}}{{item.suit}}
+          </view>
+        </view>
+      </view>
     </view>
   </view>
 
@@ -17,12 +36,33 @@
     <view class="replay-controls">
       <button class="btn btn-primary" bindtap="startReplay" wx:if="{{!isReplaying}}">开始回放</button>
       <button class="btn btn-danger" bindtap="stopReplay" wx:else>停止回放</button>
-      <text class="replay-progress">步骤: {{currentStep}} / {{gameRecord.gameState.actions.length}}</text>
+      <text class="replay-progress">步骤: {{currentStep}} / {{isMultiplayer ? replaySteps.length : gameRecord.gameState.actions.length}}</text>
     </view>
     
     <!-- 动作列表 -->
     <view class="actions-list">
+      <!-- 多人对局回放步骤 -->
       <view 
+        wx:if="{{isMultiplayer}}"
+        class="action-item {{currentStep > item.step ? 'past' : ''}} {{currentStep === item.step ? 'current' : ''}}"
+        wx:for="{{replaySteps}}" 
+        wx:key="step"
+        data-step="{{item.step}}"
+        bindtap="jumpToStep"
+      >
+        <view class="action-header">
+          <text class="action-description">{{item.description}}</text>
+          <text class="action-phase">{{item.phase}}</text>
+        </view>
+        <view class="action-content" wx:if="{{item.action}}">
+          <text class="action-type">{{item.action.action}}</text>
+          <text wx:if="{{item.action.amount}}">金额: {{item.action.amount}}</text>
+        </view>
+      </view>
+      
+      <!-- 单人游戏回放 -->
+      <view 
+        wx:else
         class="action-item {{currentStep > index ? 'past' : ''}} {{currentStep === index + 1 ? 'current' : ''}}"
         wx:for="{{gameRecord.gameState.actions}}" 
         wx:key="index"
