@@ -52,8 +52,16 @@
       </view>
     </view>
 
+    <!-- 观战提示 -->
+    <view wx:if="{{isSpectator && gameState.gamePhase !== 'ended'}}" class="spectator-notice">
+      <view class="spectator-content">
+        <text class="spectator-icon">👁️</text>
+        <text class="spectator-text">观战模式 - 您已出局，可以观看其他玩家游戏</text>
+      </view>
+    </view>
+
     <!-- 操作区域（仅当前玩家显示） -->
-    <view wx:if="{{isMyTurn}}" class="action-panel">
+    <view wx:if="{{isMyTurn && !isSpectator}}" class="action-panel">
       <view class="action-buttons">
         <button 
           class="btn btn-check" 

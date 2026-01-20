@@ -23,7 +23,8 @@ Page({
     minRaiseAmount: 40,
     isReconnecting: false,
     reconnectAttempts: 0,
-    maxReconnectAttempts: 5
+    maxReconnectAttempts: 5,
+    isSpectator: false // 是否为观战模式
   },
 
   onLoad(options) {
@@ -156,14 +157,26 @@ Page({
     
     // 找到当前玩家在游戏中的索引
     let myPlayerIndex = -1;
+    let isSpectator = false;
     room.players.forEach((player, index) => {
       if (player.userId === userInfo.userId) {
         myPlayerIndex = index;
+        // 检查玩家是否已出局（已弃牌或筹码为0且已全押）
+        const hasFolded = this.isPlayerFolded(gameState, index);
+        const isAllIn = player.chips === 0 && gameState.currentPhase !== 'waiting';
+        // 如果已弃牌或全押且游戏未结束，则为观战模式
+        isSpectator = (hasFolded || isAllIn) && gameState.currentPhase !== 'ended';
       }
     });
 
+    // 如果玩家不在房间中，也是观战模式
+    if (myPlayerIndex === -1) {
+      isSpectator = true;
+    }
+
     // 检查是否是当前玩家的回合
-    const isMyTurn = gameState.currentPlayerIndex === myPlayerIndex &&
+    const isMyTurn = !isSpectator && 
+                     gameState.currentPlayerIndex === myPlayerIndex &&
                      gameState.currentPhase !== 'waiting' &&
                      gameState.currentPhase !== 'ended';
 
@@ -184,7 +197,7 @@ Page({
           currentBet: this.getPlayerCurrentBet(gameState, idx),
           folded: this.isPlayerFolded(gameState, idx),
           allIn: p.chips === 0 && gameState.currentPhase !== 'waiting',
-          cards: this.getPlayerCards(gameState, idx, myPlayerIndex, room)
+          cards: this.getPlayerCards(gameState, idx, myPlayerIndex, room, isSpectator)
         })),
         pot: gameState.pot || 0,
         currentBet: currentBet,
@@ -194,7 +207,8 @@ Page({
       myPlayerIndex,
       isMyTurn,
       minBetAmount,
-      minRaiseAmount
+      minRaiseAmount,
+      isSpectator
     });
 
     // 如果是我的回合，启动倒计时
@@ -226,8 +240,8 @@ Page({
     );
   },
 
-  // 获取玩家手牌（只有自己的牌或游戏结束时显示）
-  getPlayerCards(gameState, playerIndex, myPlayerIndex, room) {
+  // 获取玩家手牌（只有自己的牌、游戏结束时或观战模式显示）
+  getPlayerCards(gameState, playerIndex, myPlayerIndex, room, isSpectator = false) {
     // 从房间数据中获取玩家手牌
     if (!room || !room.players || !room.players[playerIndex]) {
       return [];
@@ -236,8 +250,10 @@ Page({
     const player = room.players[playerIndex];
     const cards = player.cards || [];
     
-    // 只有自己的牌或游戏结束时才显示
-    if (playerIndex === myPlayerIndex || gameState.currentPhase === 'ended') {
+    // 显示条件：自己的牌、游戏结束、或观战模式
+    if (playerIndex === myPlayerIndex || 
+        gameState.currentPhase === 'ended' || 
+        isSpectator) {
       return cards;
     }
     return [];
