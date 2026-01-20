@@ -38,11 +38,22 @@
       </view>
     </view>
 
+    <!-- 操作提示 -->
+    <view class="action-hint" wx:if="{{gameState.currentPlayerIndex >= 0}}">
+      <view class="hint-content">
+        <text class="hint-text">
+          <text wx:if="{{isMyTurn}}" class="hint-highlight">轮到您行动了！</text>
+          <text wx:else>等待 {{gameState.players[gameState.currentPlayerIndex].name}} 行动...</text>
+        </text>
+        <view class="timer-display" wx:if="{{isMyTurn && timeLeft > 0}}">
+          <text class="timer-text">剩余时间: </text>
+          <text class="timer-value {{timeLeft <= 10 ? 'warning' : ''}}">{{timeLeft}}秒</text>
+        </view>
+      </view>
+    </view>
+
     <!-- 操作区域（仅当前玩家显示） -->
     <view wx:if="{{isMyTurn}}" class="action-panel">
-      <view class="timer" wx:if="{{timeLeft > 0}}">
-        <text>剩余时间: {{timeLeft}}秒</text>
-      </view>
       <view class="action-buttons">
         <button 
           class="btn btn-check" 

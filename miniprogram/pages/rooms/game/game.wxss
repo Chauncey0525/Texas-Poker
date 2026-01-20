@@ -208,6 +208,82 @@
   padding: 40rpx;
 }
 
+/* 操作提示 */
+.action-hint {
+  position: fixed;
+  top: 20rpx;
+  left: 20rpx;
+  right: 20rpx;
+  z-index: 100;
+  background: linear-gradient(135deg, rgba(15, 52, 96, 0.9) 0%, rgba(26, 26, 46, 0.9) 100%);
+  border-radius: 15rpx;
+  padding: 20rpx;
+  border: 2rpx solid #533483;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hint-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.hint-text {
+  font-size: 28rpx;
+  color: #fff;
+  text-align: center;
+}
+
+.hint-highlight {
+  color: #4caf50;
+  font-weight: bold;
+  font-size: 32rpx;
+  animation: pulse 1s infinite;
+}
+
+.timer-display {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-top: 10rpx;
+}
+
+.timer-text {
+  font-size: 24rpx;
+  color: #a0a0a0;
+}
+
+.timer-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff9800;
+  min-width: 60rpx;
+  text-align: center;
+}
+
+.timer-value.warning {
+  color: #f44336;
+  animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* 操作面板 */
 .action-panel {
   position: fixed;
@@ -217,14 +293,6 @@
   background-color: rgba(26, 26, 46, 0.95);
   padding: 20rpx;
   box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.3);
-}
-
-.timer {
-  text-align: center;
-  font-size: 28rpx;
-  color: #ff9800;
-  margin-bottom: 15rpx;
-  font-weight: bold;
 }
 
 .action-buttons {

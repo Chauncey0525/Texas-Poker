@@ -224,9 +224,22 @@ Page({
     this.data.actionTimer = setInterval(() => {
       timeLeft--;
       this.setData({ timeLeft });
+      
+      // 最后10秒显示警告
+      if (timeLeft === 10) {
+        wx.vibrateShort({
+          type: 'medium'
+        });
+      }
+      
       if (timeLeft <= 0) {
         this.stopActionTimer();
         // 超时自动弃牌
+        wx.showToast({
+          title: '操作超时，自动弃牌',
+          icon: 'none',
+          duration: 2000
+        });
         this.onFold();
       }
     }, 1000);
