@@ -144,10 +144,33 @@ function getPlayerStats(userId, options = {}) {
   });
 }
 
+/**
+ * 获取房间统计
+ */
+function getRoomStats(roomId) {
+  return new Promise((resolve, reject) => {
+    wx.request({
+      url: `${API_BASE_URL}/game-records/room/${roomId}/stats`,
+      method: 'GET',
+      success: (res) => {
+        if (res.statusCode === 200 && res.data.success) {
+          resolve(res.data.stats);
+        } else {
+          reject(new Error(res.data.error || '获取统计失败'));
+        }
+      },
+      fail: (err) => {
+        reject(new Error('网络请求失败'));
+      }
+    });
+  });
+}
+
 module.exports = {
   getRecordsByRoom,
   getRecordsByPlayer,
   getRecordsByTime,
   getRecordDetail,
-  getPlayerStats
+  getPlayerStats,
+  getRoomStats
 };

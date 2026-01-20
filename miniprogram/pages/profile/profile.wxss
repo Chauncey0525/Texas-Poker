@@ -109,3 +109,55 @@
   color: #0f3460;
   transform: translateX(5rpx);
 }
+
+.loading-text {
+  text-align: center;
+  padding: 40rpx;
+  color: #a0a0a0;
+  font-size: 28rpx;
+}
+
+.detailed-stats {
+  margin-top: 30rpx;
+  padding-top: 30rpx;
+  border-top: 1rpx solid rgba(83, 52, 131, 0.3);
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  font-size: 28rpx;
+}
+
+.detail-label {
+  color: #a0a0a0;
+}
+
+.detail-value {
+  font-weight: bold;
+  color: #fff;
+}
+
+.detail-value.profit {
+  color: #4caf50;
+}
+
+.detail-value.loss {
+  color: #f44336;
+}
+
+.stat-value.profit {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-value.loss {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

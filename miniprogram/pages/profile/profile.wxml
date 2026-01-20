@@ -9,18 +9,57 @@
 
   <view class="stats-section card">
     <view class="title">我的数据</view>
-    <view class="stats-grid">
-      <view class="stat-item">
-        <view class="stat-value">{{stats.totalGames}}</view>
-        <view class="stat-label">总对局</view>
+    <view wx:if="{{loading}}" class="loading-text">加载中...</view>
+    <view wx:else>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalGames}}</view>
+          <view class="stat-label">总对局</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.totalHands}}</view>
+          <view class="stat-label">总手牌</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.winRate.toFixed(1)}}%</view>
+          <view class="stat-label">胜率</view>
+        </view>
       </view>
-      <view class="stat-item">
-        <view class="stat-value">{{stats.accuracy}}%</view>
-        <view class="stat-label">准确率</view>
+      
+      <view class="stats-grid" style="margin-top: 20rpx;">
+        <view class="stat-item">
+          <view class="stat-value {{stats.totalProfit >= 0 ? 'profit' : 'loss'}}">
+            {{stats.totalProfit >= 0 ? '+' : ''}}{{stats.totalProfit.toFixed(0)}}
+          </view>
+          <view class="stat-label">总盈利</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.averageProfit.toFixed(0)}}</view>
+          <view class="stat-label">平均盈利</view>
+        </view>
+        <view class="stat-item">
+          <view class="stat-value">{{stats.accuracy}}%</view>
+          <view class="stat-label">准确率</view>
+        </view>
       </view>
-      <view class="stat-item">
-        <view class="stat-value">{{stats.winRate}}%</view>
-        <view class="stat-label">胜率</view>
+
+      <view class="detailed-stats" wx:if="{{stats.handsWon > 0 || stats.handsLost > 0}}">
+        <view class="detail-item">
+          <text class="detail-label">获胜手牌:</text>
+          <text class="detail-value">{{stats.handsWon}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="detail-label">失败手牌:</text>
+          <text class="detail-value">{{stats.handsLost}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{stats.biggestWin > 0}}">
+          <text class="detail-label">最大盈利:</text>
+          <text class="detail-value profit">+{{stats.biggestWin}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{stats.biggestLoss < 0}}">
+          <text class="detail-label">最大亏损:</text>
+          <text class="detail-value loss">{{stats.biggestLoss}}</text>
+        </view>
       </view>
     </view>
   </view>
