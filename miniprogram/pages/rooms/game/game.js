@@ -373,5 +373,12 @@ Page({
         }
       }
     });
+  },
+
+  // 玩家点击事件
+  onPlayerTap(e) {
+    const { index, player } = e.detail;
+    // 可以显示玩家详情或执行其他操作
+    console.log('点击玩家:', player);
   }
 });
